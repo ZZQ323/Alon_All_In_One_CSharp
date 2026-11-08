@@ -1,0 +1,179 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.ConfigView"
+             x:DataType="vm:ConfigViewModel">
+
+    <Design.DataContext>
+        <vm:ConfigViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题和刷新按钮 -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="配置管理" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Button Content="刷新" Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Padding="15,8"/>
+        </Grid>
+
+        <!-- 错误提示 -->
+        <Border Grid.Row="1" IsVisible="{Binding HasError}" 
+                Background="#FF5252" CornerRadius="5" Padding="10" Margin="0,0,0,10">
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="White" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- 配置 TabControl -->
+        <TabControl Grid.Row="2">
+            <!-- 达人类型 -->
+            <TabItem Header="达人类型">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid Grid.Row="0" 
+                              ItemsSource="{Binding CreatorTypes}"
+                              SelectedItem="{Binding SelectedCreatorType}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="200"/>
+                            <DataGridTextColumn Header="描述" Binding="{Binding Description}" Width="*"/>
+                            <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="180"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
+                        <TextBox Text="{Binding NewCreatorTypeName}" Watermark="类型名称" Height="35"/>
+                        <TextBox Text="{Binding NewCreatorTypeDescription}" Watermark="类型描述" Height="35"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Content="添加达人类型" Command="{Binding AddCreatorTypeCommand}" Height="35" Classes="accent"/>
+                            <Button Content="删除选中" Command="{Binding DeleteCreatorTypeCommand}" Height="35"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- 产品代码 -->
+            <TabItem Header="产品代码">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid Grid.Row="0" 
+                              ItemsSource="{Binding ProductCodes}"
+                              SelectedItem="{Binding SelectedProductCode}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="150"/>
+                            <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="200"/>
+                            <DataGridTextColumn Header="描述" Binding="{Binding Description}" Width="*"/>
+                            <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="180"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
+                        <TextBox Text="{Binding NewProductCode}" Watermark="产品代码" Height="35"/>
+                        <TextBox Text="{Binding NewProductName}" Watermark="产品名称" Height="35"/>
+                        <TextBox Text="{Binding NewProductDescription}" Watermark="产品描述" Height="35"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Content="添加产品代码" Command="{Binding AddProductCodeCommand}" Height="35" Classes="accent"/>
+                            <Button Content="删除选中" Command="{Binding DeleteProductCodeCommand}" Height="35"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- 质量等级 -->
+            <TabItem Header="质量等级">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid Grid.Row="0" 
+                              ItemsSource="{Binding QualityLevels}"
+                              SelectedItem="{Binding SelectedQualityLevel}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="100"/>
+                            <DataGridTextColumn Header="标签" Binding="{Binding Label}" Width="150"/>
+                            <DataGridTextColumn Header="排序" Binding="{Binding SortOrder}" Width="100"/>
+                            <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
+                        <TextBox Text="{Binding NewQualityCode}" Watermark="等级代码（如 S、A、B）" Height="35"/>
+                        <TextBox Text="{Binding NewQualityLabel}" Watermark="等级标签（如 S级、A级）" Height="35"/>
+                        <TextBox Text="{Binding NewQualitySort}" Watermark="排序（数字）" Height="35"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Content="添加质量等级" Command="{Binding AddQualityLevelCommand}" Height="35" Classes="accent"/>
+                            <Button Content="删除选中" Command="{Binding DeleteQualityLevelCommand}" Height="35"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- 联系方式渠道 -->
+            <TabItem Header="联系方式渠道">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid Grid.Row="0" 
+                              ItemsSource="{Binding ContactChannels}"
+                              SelectedItem="{Binding SelectedContactChannel}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="150"/>
+                            <DataGridTextColumn Header="标签" Binding="{Binding Label}" Width="200"/>
+                            <DataGridTextColumn Header="排序" Binding="{Binding SortOrder}" Width="100"/>
+                            <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
+                        <TextBox Text="{Binding NewChannelCode}" Watermark="渠道代码（如 whatsapp、email）" Height="35"/>
+                        <TextBox Text="{Binding NewChannelLabel}" Watermark="渠道标签（如 WhatsApp、邮箱）" Height="35"/>
+                        <TextBox Text="{Binding NewChannelSort}" Watermark="排序（数字）" Height="35"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Content="添加联系方式渠道" Command="{Binding AddContactChannelCommand}" Height="35" Classes="accent"/>
+                            <Button Content="删除选中" Command="{Binding DeleteContactChannelCommand}" Height="35"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

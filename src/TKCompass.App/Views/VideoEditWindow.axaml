@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TKCompass.ViewModels"
+        x:Class="TKCompass.Views.VideoEditWindow"
+        x:DataType="vm:VideoEditViewModel"
+        Title="视频编辑"
+        Width="500" Height="450"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    
+    <StackPanel Margin="20" Spacing="15">
+        <TextBlock Text="视频信息" FontSize="18" FontWeight="Bold" Foreground="White"/>
+        
+        <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="视频链接:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding VideoUrl}"/>
+            
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="视频日期:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding VideoDate}"/>
+            
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="广告代码:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding AdCode}"/>
+            
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="观看数:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Views}" Minimum="0"/>
+            
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="订单数:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding Orders}" Minimum="0"/>
+            
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="GMV:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <NumericUpDown Grid.Row="5" Grid.Column="1" Value="{Binding Gmv}" Minimum="0"/>
+            
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="计入履约:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding IsEffective}"/>
+        </Grid>
+        
+        <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,20,0,0">
+            <Button Grid.Column="1" Content="保存" Command="{Binding SaveCommand}" 
+                    Background="#0078D4" Foreground="White" Padding="20,8" Margin="0,0,10,0"/>
+            <Button Grid.Column="2" Content="取消" Click="OnCancelClick" 
+                    Background="#3F3F46" Foreground="White" Padding="20,8"/>
+        </Grid>
+    </StackPanel>
+</Window>

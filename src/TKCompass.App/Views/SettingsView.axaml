@@ -1,0 +1,78 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+    
+    <Design.DataContext>
+        <vm:SettingsViewModel />
+    </Design.DataContext>
+    
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="20">
+            <TextBlock Text="设置" FontSize="24" FontWeight="Bold"/>
+            
+            <!-- 状态消息 -->
+            <Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    Background="{Binding HasError, Converter={StaticResource BoolToBackgroundConverter}}"
+                    CornerRadius="4" Padding="12">
+                <TextBlock Text="{Binding StatusMessage}" Foreground="White"/>
+            </Border>
+            
+            <!-- 数据库设置 -->
+            <Border BorderBrush="#333333" BorderThickness="1" CornerRadius="4" Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="数据库" FontSize="16" FontWeight="SemiBold"/>
+                    
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="数据库路径"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Grid.Column="0" Text="{Binding DatabasePath}" IsReadOnly="True"/>
+                            <Button Grid.Column="1" Content="浏览..." Command="{Binding BrowseDatabasePathCommand}" Margin="10,0,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- 备份设置 -->
+            <Border BorderBrush="#333333" BorderThickness="1" CornerRadius="4" Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="备份" FontSize="16" FontWeight="SemiBold"/>
+                    
+                    <CheckBox Content="启用自动备份" IsChecked="{Binding AutoBackup}"/>
+                    
+                    <StackPanel Spacing="5" IsEnabled="{Binding AutoBackup}">
+                        <TextBlock Text="备份路径"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Grid.Column="0" Text="{Binding BackupPath}" IsReadOnly="True"/>
+                            <Button Grid.Column="1" Content="浏览..." Command="{Binding BrowseBackupPathCommand}" Margin="10,0,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- 日志清理 -->
+            <Border BorderBrush="#333333" BorderThickness="1" CornerRadius="4" Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="操作日志" FontSize="16" FontWeight="SemiBold"/>
+                    
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="日志保留天数"/>
+                        <NumericUpDown Value="{Binding LogRetentionDays}" Minimum="1" Maximum="365" Increment="1"/>
+                    </StackPanel>
+                    
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="最少保留条数"/>
+                        <NumericUpDown Value="{Binding MinimumLogCount}" Minimum="0" Maximum="100000" Increment="100"/>
+                    </StackPanel>
+                    
+                    <Button Content="清理旧日志" Command="{Binding CleanOldLogsCommand}" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- 保存按钮 -->
+            <Button Content="保存设置" Command="{Binding SaveSettingsCommand}" 
+                    HorizontalAlignment="Left" Padding="20,10"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

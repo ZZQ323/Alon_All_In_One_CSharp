@@ -1,0 +1,56 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.vs/
+.vs/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+
+## NuGet
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nupkg
+*.snupkg
+**/[Pp]roject.assets.json
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## IDE
+.idea/
+*.sln.docstates
+.vscode/
+*.swp
+*~
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Avalonia specific
+*.avalign
+
+## Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coveragexml
+
+## Logs
+*.log
+
+## SQLite
+*.db
+*.db-shm
+*.db-wal
+!docs/**/*.db
+
+## User-specific
+*.DotSettings.user

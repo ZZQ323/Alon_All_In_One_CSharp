@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.OperationHistoryView"
+             x:DataType="vm:OperationHistoryViewModel">
+    
+    <Design.DataContext>
+        <vm:OperationHistoryViewModel />
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- 工具栏 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="20">
+            <TextBlock Text="操作历史" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Button Content="刷新" Command="{Binding RefreshCommand}" Padding="15,8"/>
+            <Button Content="撤销" Command="{Binding UndoCommand}" Padding="15,8"/>
+            <Button Content="撤销整组" Command="{Binding UndoGroupCommand}" Padding="15,8"/>
+            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" 
+                       Foreground="#B0B0B0"/>
+        </StackPanel>
+        
+        <!-- 日志列表 -->
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding OperationLogs}"
+                  SelectedItem="{Binding SelectedLog}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Margin="20,0"
+                  GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}" Width="180"/>
+                <DataGridTextColumn Header="操作类型" Binding="{Binding OperationType}" Width="100"/>
+                <DataGridTextColumn Header="实体类型" Binding="{Binding EntityType}" Width="100"/>
+                <DataGridTextColumn Header="实体ID" Binding="{Binding EntityId}" Width="100"/>
+                <DataGridTextColumn Header="描述" Binding="{Binding Description}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- 详情面板 -->
+        <Border Grid.Row="2" Margin="20" Padding="15" 
+                BorderBrush="#333333" BorderThickness="1" CornerRadius="4"
+                IsVisible="{Binding SelectedLog, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <StackPanel Spacing="10">
+                <TextBlock Text="操作详情" FontSize="16" FontWeight="SemiBold"/>
+                
+                <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="操作类型:" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedLog.OperationType}"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="实体类型:" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedLog.EntityType}"/>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="实体ID:" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedLog.EntityId}"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="操作时间:" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedLog.CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"/>
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="描述:" FontWeight="SemiBold"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedLog.Description}" TextWrapping="Wrap"/>
+                </Grid>
+                
+                <!-- JSON 数据 -->
+                <Expander Header="变更前数据" IsExpanded="False" Margin="0,10,0,0">
+                    <TextBox Text="{Binding SelectedLog.BeforeData}" 
+                             IsReadOnly="True" 
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Height="150"
+                             FontFamily="Consolas"
+                             FontSize="12"/>
+                </Expander>
+                
+                <Expander Header="变更后数据" IsExpanded="False">
+                    <TextBox Text="{Binding SelectedLog.AfterData}" 
+                             IsReadOnly="True" 
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Height="150"
+                             FontFamily="Consolas"
+                             FontSize="12"/>
+                </Expander>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

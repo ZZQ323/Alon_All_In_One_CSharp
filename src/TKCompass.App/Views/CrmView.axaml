@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.CrmView"
+             x:DataType="vm:CrmViewModel">
+    
+    <Design.DataContext>
+        <vm:CrmViewModel />
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- 顶部筛选区 -->
+        <StackPanel Grid.Row="0" Margin="20" Spacing="10">
+            <TextBlock Text="CRM 管理" FontSize="24" FontWeight="Bold"/>
+            
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBox Text="{Binding SearchText}" 
+                         Watermark="搜索达人..." 
+                         Width="300"/>
+                <ComboBox ItemsSource="{Binding Levels}" 
+                          SelectedItem="{Binding SelectedLevel}" 
+                          Width="120"/>
+                <Button Content="刷新" Command="{Binding RefreshCommand}"/>
+            </StackPanel>
+        </StackPanel>
+        
+        <!-- 达人列表 -->
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding Creators}"
+                  SelectedItem="{Binding SelectedCreator}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Margin="20,0"
+                  GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Handle" Binding="{Binding Handle}" Width="150"/>
+                <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
+                <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="80"/>
+                <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="120"/>
+                <DataGridTextColumn Header="今日状态" Binding="{Binding TodayStatus}" Width="100"/>
+                <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="120"/>
+                <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="120"/>
+                <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- 底部状态栏 -->
+        <Border Grid.Row="2" Background="#2D2D30" Padding="10" Margin="20">
+            <TextBlock Text="{Binding Creators.Count, StringFormat='共 {0} 个达人'}" 
+                       Foreground="#B0B0B0"/>
+        </Border>
+    </Grid>
+</UserControl>

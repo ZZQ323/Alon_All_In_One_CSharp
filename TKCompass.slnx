@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/TKCompass.Domain/TKCompass.Domain.csproj" />
+  <Project Path="src/TKCompass.App/TKCompass.AppBase.csproj" />
+  <Project Path="src/TKCompass.Data/TKCompass.Data.csproj" />
+  <Project Path="src/TKCompass.Excel/TKCompass.Excel.csproj" />
+</Solution>

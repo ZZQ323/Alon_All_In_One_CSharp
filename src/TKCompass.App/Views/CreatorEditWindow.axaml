@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TKCompass.ViewModels"
+        x:Class="TKCompass.Views.CreatorEditWindow"
+        x:DataType="vm:CreatorEditViewModel"
+        Title="{Binding IsEditMode, StringFormat='{}{0:编辑|新增}达人'}"
+        Width="600" Height="700"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:CreatorEditViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0" 
+                   Text="{Binding IsEditMode, StringFormat='{}{0:编辑|新增}达人信息'}" 
+                   FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <!-- 表单 -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="15">
+                <!-- 错误提示 -->
+                <Border IsVisible="{Binding HasError}" 
+                        Background="#FF5252" CornerRadius="5" Padding="10" Margin="0,0,0,10">
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="White"/>
+                </Border>
+
+                <!-- 达人ID -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="达人ID *" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Handle}" Watermark="例如: tiktok_user_123"/>
+                </StackPanel>
+
+                <!-- 昵称 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="昵称 *" FontWeight="Bold"/>
+                    <TextBox Text="{Binding Nickname}" Watermark="达人昵称"/>
+                </StackPanel>
+
+                <!-- 等级 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="等级" FontWeight="Bold"/>
+                    <ComboBox ItemsSource="{Binding QualityLevelOptions}" 
+                              SelectedItem="{Binding QualityLevel}" 
+                              HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- TikTok主页链接 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="TikTok主页链接" FontWeight="Bold"/>
+                    <TextBox Text="{Binding TiktokHomepageUrl}" Watermark="https://www.tiktok.com/@xxx"/>
+                </StackPanel>
+
+                <!-- 语种 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="语种" FontWeight="Bold"/>
+                    <TextBox Text="{Binding PreferredLanguage}" Watermark="例如: 英语、西班牙语"/>
+                </StackPanel>
+
+                <!-- 国家/地区 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="国家/地区" FontWeight="Bold"/>
+                    <TextBox Text="{Binding CountryRegion}" Watermark="例如: 美国、英国"/>
+                </StackPanel>
+
+                <!-- 内容分类 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="内容分类" FontWeight="Bold"/>
+                    <TextBox Text="{Binding ContentCategory}" Watermark="例如: 美妆、时尚、科技"/>
+                </StackPanel>
+
+                <!-- 来源渠道 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="来源渠道" FontWeight="Bold"/>
+                    <TextBox Text="{Binding SourceChannel}" Watermark="例如: TikTok推荐、朋友介绍"/>
+                </StackPanel>
+
+                <!-- 佣金比例 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="佣金比例" FontWeight="Bold"/>
+                    <TextBox Text="{Binding CommissionRate}" Watermark="例如: 20%"/>
+                </StackPanel>
+
+                <!-- 备注 -->
+                <StackPanel Spacing="5">
+                    <TextBlock Text="备注" FontWeight="Bold"/>
+                    <TextBox Text="{Binding CreatorNotes}" 
+                             AcceptsReturn="True" 
+                             TextWrapping="Wrap"
+                             Height="100"
+                             Watermark="其他备注信息"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- 按钮 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+            <Button Content="取消" Command="{Binding CancelCommand}" Width="100" Height="35"/>
+            <Button Content="保存" Command="{Binding SaveCommand}" Width="100" Height="35" Classes="accent"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,72 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TKCompass.ViewModels"
+        xmlns:views="using:TKCompass.Views"
+        x:Class="TKCompass.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="TKCompass - 达人管理系统"
+        Width="1200" Height="800">
+    
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+    
+    <Grid ColumnDefinitions="200,*">
+        <!-- 左侧导航栏 -->
+        <Border Grid.Column="0" Background="#1E1E1E">
+            <StackPanel Margin="0,20,0,0">
+                <TextBlock Text="TKCompass" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           Margin="20,0,20,20"/>
+                
+                <Button Content="达人工作台" 
+                        Command="{Binding NavigateToDashboardCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+                
+                <Button Content="今日跟进" 
+                        Command="{Binding NavigateToTodayFollowUpCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+                
+                <Button Content="CRM 管理" 
+                        Command="{Binding NavigateToCrmCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+                
+                <Button Content="Excel 导入" 
+                        Command="{Binding NavigateToExcelImportCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+                
+                <Button Content="配置管理" 
+                        Command="{Binding NavigateToConfigCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+                
+                <Button Content="操作历史" 
+                        Command="{Binding NavigateToOperationHistoryCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+                
+                <Button Content="设置" 
+                        Command="{Binding NavigateToSettingsCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="10,5"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- 右侧内容区 -->
+        <Border Grid.Column="1" Background="#252525">
+            <ContentControl Content="{Binding CurrentView}"/>
+        </Border>
+    </Grid>
+</Window>

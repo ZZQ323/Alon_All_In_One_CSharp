@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.CreatorTypeMultiSelectView"
+             x:DataType="vm:CreatorTypeMultiSelectViewModel">
+    
+    <Design.DataContext>
+        <vm:CreatorTypeMultiSelectViewModel />
+    </Design.DataContext>
+    
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- 左侧：可选类型 -->
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="可选达人类型" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <ListBox ItemsSource="{Binding AvailableTypes}"
+                     SelectedItem="{Binding SelectedAvailableType}"
+                     Height="400">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" Width="150"/>
+                            <TextBlock Text="{Binding Description}" Width="200"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        
+        <!-- 中间：操作按钮 -->
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
+            <Button Content="→" Command="{Binding AddSelectedCommand}" Width="50" Margin="0,5"/>
+            <Button Content="←" Command="{Binding RemoveSelectedCommand}" Width="50" Margin="0,5"/>
+            <Button Content="→→" Command="{Binding AddAllCommand}" Width="50" Margin="0,5"/>
+            <Button Content="←←" Command="{Binding RemoveAllCommand}" Width="50" Margin="0,5"/>
+        </StackPanel>
+        
+        <!-- 右侧：已选类型 -->
+        <StackPanel Grid.Column="2">
+            <TextBlock Text="已选达人类型" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+            <ListBox ItemsSource="{Binding SelectedTypes}"
+                     SelectedItem="{Binding SelectedSelectedType}"
+                     Height="400">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" Width="150"/>
+                            <TextBlock Text="{Binding Description}" Width="200"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

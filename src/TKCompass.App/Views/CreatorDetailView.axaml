@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.CreatorDetailView"
+             x:DataType="vm:CreatorDetailViewModel">
+    
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            
+            <!-- 达人基本信息 -->
+            <Border Background="#2D2D30" CornerRadius="8" Padding="15">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="达人信息" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                    
+                    <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="达人ID:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Creator.Handle}" IsReadOnly="True"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="昵称:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Creator.Nickname}"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="质量等级:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Creator.QualityLevel}"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="合作状态:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Creator.CooperationStatus}" Foreground="White" VerticalAlignment="Center"/>
+                        
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="TikTok主页:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Creator.TiktokHomepageUrl}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            
+            <!-- 寄样记录（折叠栏） -->
+            <Border Background="#2D2D30" CornerRadius="8" Padding="15">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="寄样记录" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <Button Grid.Column="1" Content="+ 新增寄样" Command="{Binding AddShipmentCommand}" 
+                                Background="#0078D4" Foreground="White" Padding="10,5"/>
+                    </Grid>
+                    
+                    <ItemsControl ItemsSource="{Binding Shipments}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Expander Margin="0,5" Background="#1E1E1E">
+                                    <Expander.Header>
+                                        <Grid ColumnDefinitions="*,Auto,Auto" Width="600">
+                                            <TextBlock Text="{Binding TrackingNumber}" Foreground="White" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding SampleDate}" Foreground="#B0B0B0" Margin="10,0" VerticalAlignment="Center"/>
+                                            <Button Grid.Column="2" Content="删除" Command="{Binding $parent[ItemsControl].((vm:CreatorDetailViewModel)DataContext).DeleteShipmentCommand}" 
+                                                    CommandParameter="{Binding}" Foreground="#FF6B6B" Background="Transparent"/>
+                                        </Grid>
+                                    </Expander.Header>
+                                    <StackPanel Margin="10" Spacing="5">
+                                        <TextBlock Foreground="#B0B0B0">
+                                            <Run Text="SKU: "/><Run Text="{Binding Sku}"/>
+                                        </TextBlock>
+                                        <TextBlock Foreground="#B0B0B0">
+                                            <Run Text="要求视频数: "/><Run Text="{Binding RequiredVideoCount}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Expander>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+            
+            <!-- 保存按钮 -->
+            <Button Content="保存" Command="{Binding SaveCommand}" 
+                    Background="#0078D4" Foreground="White" 
+                    HorizontalAlignment="Right" Padding="20,8" FontSize="14"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

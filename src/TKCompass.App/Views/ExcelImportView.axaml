@@ -1,0 +1,104 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.ExcelImportView"
+             x:DataType="vm:ExcelImportViewModel">
+    
+    <Design.DataContext>
+        <vm:ExcelImportViewModel />
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- 顶部控制区 -->
+        <StackPanel Grid.Row="0" Margin="20" Spacing="10">
+            <TextBlock Text="Excel 导入" FontSize="24" FontWeight="Bold"/>
+            
+            <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,10,0,0">
+                <TextBox Grid.Column="0" 
+                         Text="{Binding FilePath}" 
+                         Watermark="请选择 Excel 文件..."
+                         IsReadOnly="True"/>
+                <Button Grid.Column="1" 
+                        Content="选择文件" 
+                        Command="{Binding SelectFileCommand}"
+                        Margin="10,0,0,0"/>
+                <Button Grid.Column="2" 
+                        Content="解析" 
+                        Command="{Binding ParseFileCommand}"
+                        Margin="10,0,0,0"/>
+            </Grid>
+            
+            <TextBlock Text="{Binding StatusMessage}" 
+                       Foreground="{Binding HasErrors, Converter={StaticResource BoolToForegroundConverter}}"/>
+        </StackPanel>
+        
+        <!-- 预览区 -->
+        <Grid Grid.Row="1" Margin="20,0,20,0" IsVisible="{Binding Preview, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- 达人预览 -->
+            <TextBlock Grid.Row="0" 
+                       Text="{Binding Preview.CreatorRows.Count, StringFormat='达人数据 ({0} 行)'}" 
+                       FontSize="16" 
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,10"/>
+            
+            <DataGrid Grid.Row="1" 
+                      ItemsSource="{Binding Preview.CreatorRows}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="行号" Binding="{Binding RowIndex}" Width="60"/>
+                    <DataGridTextColumn Header="Handle" Binding="{Binding Handle}" Width="150"/>
+                    <DataGridTextColumn Header="质量等级" Binding="{Binding QualityLevel}" Width="100"/>
+                    <DataGridTextColumn Header="快递单号" Binding="{Binding TrackingNumber}" Width="120"/>
+                    <DataGridTextColumn Header="SKU" Binding="{Binding Sku}" Width="100"/>
+                    <DataGridTextColumn Header="寄样日期" Binding="{Binding SampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+                    <DataGridTextColumn Header="状态" Binding="{Binding IsValid, Converter={StaticResource BoolToStatusTextConverter}}" Width="80"/>
+                    <DataGridTextColumn Header="错误信息" Binding="{Binding ErrorMessage}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!-- 视频预览 -->
+            <TextBlock Grid.Row="2" 
+                       Text="{Binding Preview.VideoRows.Count, StringFormat='视频数据 ({0} 行)'}" 
+                       FontSize="16" 
+                       FontWeight="SemiBold"
+                       Margin="0,20,0,10"/>
+            
+            <DataGrid Grid.Row="3" 
+                      ItemsSource="{Binding Preview.VideoRows}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="行号" Binding="{Binding RowIndex}" Width="60"/>
+                    <DataGridTextColumn Header="Handle" Binding="{Binding Handle}" Width="150"/>
+                    <DataGridTextColumn Header="视频链接" Binding="{Binding VideoUrl}" Width="*"/>
+                    <DataGridTextColumn Header="视频日期" Binding="{Binding VideoDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+                    <DataGridTextColumn Header="广告代码" Binding="{Binding AdCode}" Width="120"/>
+                    <DataGridTextColumn Header="状态" Binding="{Binding IsValid, Converter={StaticResource BoolToStatusTextConverter}}" Width="80"/>
+                    <DataGridTextColumn Header="错误信息" Binding="{Binding ErrorMessage}" Width="200"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        
+        <!-- 底部操作区 -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="20"
+                    Spacing="10">
+            <Button Content="导入" 
+                    Command="{Binding ImportCommand}"
+                    IsEnabled="{Binding !IsImporting}"
+                    Classes="accent"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
