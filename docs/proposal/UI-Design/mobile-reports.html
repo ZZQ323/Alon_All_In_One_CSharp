@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aolon · Mobile Reports</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 20px; }
+    .phone-frame { width: 375px; height: 812px; background: #fff; border-radius: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .status-bar { height: 44px; background: #2c3e50; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: #fff; font-size: 14px; font-weight: 600; }
+    .app-header { background: #3498db; color: #fff; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .app-title { font-size: 20px; font-weight: 700; }
+    .header-actions { display: flex; gap: 12px; }
+    .icon-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border: none; border-radius: 8px; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .period-selector { display: flex; gap: 8px; padding: 12px 16px; background: #fff; border-bottom: 1px solid #e0e0e0; }
+    .period-btn { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; font-weight: 600; text-align: center; background: #fff; color: #7f8c8d; cursor: pointer; }
+    .period-btn.active { background: #3498db; color: #fff; border-color: #3498db; }
+    .content { flex: 1; overflow-y: auto; padding: 12px; background: #f5f5f5; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+    .kpi-card { background: #fff; border-radius: 12px; padding: 14px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .kpi-value { font-size: 26px; font-weight: 700; }
+    .kpi-label { font-size: 11px; color: #7f8c8d; margin-top: 4px; }
+    .kpi-change { font-size: 10px; margin-top: 4px; font-weight: 600; }
+    .change-up { color: #27ae60; }
+    .change-down { color: #e74c3c; }
+    .section { background: #fff; border-radius: 12px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .section-header { padding: 12px 16px; background: #ecf0f1; font-size: 14px; font-weight: 600; color: #2c3e50; display: flex; align-items: center; gap: 8px; }
+    .section-body { padding: 12px 16px; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding: 8px 0; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; }
+    .bar-label { font-size: 9px; color: #7f8c8d; }
+    .bar-value { font-size: 10px; font-weight: 600; color: #2c3e50; }
+    .rank-list { }
+    .rank-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .rank-item:last-child { border-bottom: none; }
+    .rank-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+    .rank-1 { background: #f39c12; }
+    .rank-2 { background: #95a5a6; }
+    .rank-3 { background: #cd6133; }
+    .rank-other { background: #bdc3c7; color: #7f8c8d; }
+    .rank-info { flex: 1; }
+    .rank-handle { font-size: 13px; font-weight: 600; color: #2c3e50; }
+    .rank-meta { font-size: 11px; color: #7f8c8d; }
+    .rank-value { font-size: 14px; font-weight: 700; color: #2c3e50; }
+    .bottom-nav { height: 60px; background: #fff; border-top: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-around; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #7f8c8d; font-size: 11px; }
+    .nav-item.active { color: #3498db; }
+    .nav-icon { font-size: 24px; }
+    .page-label { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.8); color: #fff; padding: 12px 16px; border-radius: 8px; font-size: 12px; z-index: 1000; }
+    .page-label .title { font-weight: 700; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <div class="page-label">
+    <div class="title">Mobile Reports</div>
+    <div>KPIs · Charts · Creator Ranking</div>
+  </div>
+  <div class="phone-frame">
+    <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+    <div class="app-header">
+      <div class="app-title">Reports</div>
+      <div class="header-actions">
+        <button class="icon-btn">📤</button>
+      </div>
+    </div>
+    <div class="period-selector">
+      <div class="period-btn">Week</div>
+      <div class="period-btn active">Month</div>
+      <div class="period-btn">Quarter</div>
+    </div>
+    <div class="content">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value" style="color:#3498db">$8,420</div>
+          <div class="kpi-label">Total GMV</div>
+          <div class="kpi-change change-up">↑ 23% vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" style="color:#27ae60">87%</div>
+          <div class="kpi-label">Delivery Rate</div>
+          <div class="kpi-change change-up">↑ 5% vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" style="color:#f39c12">48</div>
+          <div class="kpi-label">Active Creators</div>
+          <div class="kpi-change change-up">↑ 6 new</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" style="color:#e74c3c">14</div>
+          <div class="kpi-label">Pending Shipments</div>
+          <div class="kpi-change change-down">↑ 3 overdue</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header"><span>📊</span> Weekly Video Deliveries</div>
+        <div class="section-body">
+          <div class="bar-chart">
+            <div class="bar-col"><div class="bar-value">5</div><div class="bar" style="height:50%;background:#3498db"></div><div class="bar-label">Mon</div></div>
+            <div class="bar-col"><div class="bar-value">8</div><div class="bar" style="height:80%;background:#3498db"></div><div class="bar-label">Tue</div></div>
+            <div class="bar-col"><div class="bar-value">3</div><div class="bar" style="height:30%;background:#3498db"></div><div class="bar-label">Wed</div></div>
+            <div class="bar-col"><div class="bar-value">10</div><div class="bar" style="height:100%;background:#27ae60"></div><div class="bar-label">Thu</div></div>
+            <div class="bar-col"><div class="bar-value">6</div><div class="bar" style="height:60%;background:#3498db"></div><div class="bar-label">Fri</div></div>
+            <div class="bar-col"><div class="bar-value">2</div><div class="bar" style="height:20%;background:#95a5a6"></div><div class="bar-label">Sat</div></div>
+            <div class="bar-col"><div class="bar-value">1</div><div class="bar" style="height:10%;background:#95a5a6"></div><div class="bar-label">Sun</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header"><span>🏆</span> Top Creators by GMV</div>
+        <div class="section-body">
+          <div class="rank-list">
+            <div class="rank-item">
+              <div class="rank-num rank-1">1</div>
+              <div class="rank-info"><div class="rank-handle">@mom_life</div><div class="rank-meta">8 videos · 92% delivery</div></div>
+              <div class="rank-value">$2,100</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num rank-2">2</div>
+              <div class="rank-info"><div class="rank-handle">@lifestyle_kate</div><div class="rank-meta">5 videos · 80% delivery</div></div>
+              <div class="rank-value">$1,250</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num rank-3">3</div>
+              <div class="rank-info"><div class="rank-handle">@fitness_pro</div><div class="rank-meta">3 videos · 100% delivery</div></div>
+              <div class="rank-value">$890</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num rank-other">4</div>
+              <div class="rank-info"><div class="rank-handle">@beauty_guru</div><div class="rank-meta">4 videos · 75% delivery</div></div>
+              <div class="rank-value">$670</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num rank-other">5</div>
+              <div class="rank-info"><div class="rank-handle">@gadget_guy</div><div class="rank-meta">2 videos · 66% delivery</div></div>
+              <div class="rank-value">$340</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="mobile-dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+      <a class="nav-item" href="mobile-creators.html"><span class="nav-icon">👥</span><span>Creators</span></a>
+      <a class="nav-item" href="mobile-shipments.html"><span class="nav-icon">📦</span><span>Shipments</span></a>
+      <a class="nav-item active" href="mobile-reports.html"><span class="nav-icon">📈</span><span>Reports</span></a>
+    </div>
+  </div>
+</body>
+</html>

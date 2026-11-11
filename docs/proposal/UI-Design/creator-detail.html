@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aolon · 达人详情</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <!-- Screen Label -->
+  <div class="page-label">
+    <div class="title">达人详情 · Creator Detail</div>
+    <div class="desc">下钻页面 · 折叠面板展示寄样记录 · 内联编辑视频/代码</div>
+  </div>
+
+  <!-- Navigation Index -->
+  <div class="index-nav">
+    <a href="dashboard.html">📊 工作台</a>
+    <a href="creator-detail.html">👤 达人详情</a>
+    <a href="shipment-form.html">📦 寄样表单</a>
+  </div>
+
+  <!-- Desktop Window -->
+  <div class="window-frame">
+    <!-- Title Bar -->
+    <div class="title-bar">
+      <div class="dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="app-title">Aolon 达人管理系统 v3.0</div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <!-- Creator Header Card -->
+      <div class="creator-header">
+        <div class="creator-avatar">👤</div>
+        <div class="creator-info">
+          <div class="handle">@lifestyle_kate</div>
+          <div class="meta">
+            <span>昵称: Kate Johnson</span>
+            <span>等级: <span class="pill pill-s">S</span></span>
+            <span>状态: 已寄样</span>
+            <span>最后联系: 2 天前</span>
+          </div>
+        </div>
+        <button class="btn btn-info">📤 导出详情</button>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card" style="background:var(--blue-soft)">
+          <div class="stat-value" style="color:var(--blue)">5</div>
+          <div class="stat-label">视频总数</div>
+        </div>
+        <div class="stat-card" style="background:var(--green-soft)">
+          <div class="stat-value" style="color:var(--green)">3</div>
+          <div class="stat-label">代码总数</div>
+        </div>
+        <div class="stat-card" style="background:var(--red-soft)">
+          <div class="stat-value" style="color:var(--red)">2</div>
+          <div class="stat-label">无代码视频</div>
+        </div>
+        <div class="stat-card" style="background:var(--yellow-soft)">
+          <div class="stat-value" style="color:var(--yellow)">1</div>
+          <div class="stat-label">缺视频</div>
+        </div>
+      </div>
+
+      <!-- Basic Info Section -->
+      <div class="section">
+        <div class="section-header">
+          <span class="icon">📝</span>
+          基本信息
+        </div>
+        <div class="section-body">
+          <div class="form-row">
+            <div class="form-label">Handle:</div>
+            <div style="flex:1;font-weight:600">@lifestyle_kate</div>
+          </div>
+          <div class="form-row">
+            <div class="form-label">昵称:</div>
+            <div style="flex:1">Kate Johnson</div>
+          </div>
+          <div class="form-row">
+            <div class="form-label">等级:</div>
+            <select class="form-input" style="width:100px">
+              <option selected>S</option>
+              <option>A</option>
+              <option>B</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-label">WhatsApp:</div>
+            <input type="text" class="form-input" value="+1 234 567 8900" style="width:200px">
+          </div>
+          <div class="form-row">
+            <div class="form-label">邮箱:</div>
+            <input type="text" class="form-input" value="kate@example.com" style="width:200px">
+          </div>
+          <div class="form-row">
+            <div class="form-label">备注:</div>
+            <textarea class="form-input" rows="2" style="width:300px">擅长生活方式类内容，粉丝活跃度高</textarea>
+          </div>
+          <div style="text-align:right;margin-top:12px">
+            <button class="btn btn-primary">保存基本信息</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Relationship Info Section (Collapsed) -->
+      <div class="section">
+        <div class="section-header" style="cursor:pointer">
+          <span class="icon">🤝</span>
+          关系信息（S/A/B CRM）
+          <span style="margin-left:auto;font-size:11px;color:var(--ink-3)">▶ 展开</span>
+        </div>
+      </div>
+
+      <!-- Shipment Records -->
+      <div style="font-size:14px;font-weight:700;margin-top:8px">寄样记录</div>
+
+      <!-- Shipment Fold Panel 1 -->
+      <div class="fold-panel">
+        <div class="fold-header">
+          <span style="font-size:14px">▼</span>
+          <div class="fold-title">寄样 #1: 快递单号 ABC123456</div>
+          <div class="fold-meta">
+            <span>SKU: BEAUTY-001</span>
+            <span>寄样日期: 2026-10-01</span>
+            <span>要求视频: 3</span>
+            <span class="pill pill-red">缺视频: 1</span>
+            <span class="pill pill-red">缺代码: 1</span>
+          </div>
+        </div>
+        <div class="fold-body">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:280px">视频链接</th>
+                <th style="width:120px">广告代码</th>
+                <th style="width:100px">发布日期</th>
+                <th style="width:80px">播放量</th>
+                <th style="width:80px">订单</th>
+                <th style="width:100px">GMV</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="#" style="color:var(--info);text-decoration:none">https://tiktok.com/@lifestyle_kate/video/123...</a></td>
+                <td><input type="text" value="ABC123" style="width:100px;padding:4px 8px;border:1px solid var(--line);border-radius:4px;font-size:12px"></td>
+                <td>2026-10-05</td>
+                <td>12.5K</td>
+                <td>45</td>
+                <td>$890</td>
+                <td><button class="btn btn-xs btn-ghost">编辑</button></td>
+              </tr>
+              <tr>
+                <td><a href="#" style="color:var(--info);text-decoration:none">https://tiktok.com/@lifestyle_kate/video/124...</a></td>
+                <td><input type="text" value="" placeholder="待填写" style="width:100px;padding:4px 8px;border:1px solid var(--red);border-radius:4px;font-size:12px;background:var(--red-soft)"></td>
+                <td>2026-10-07</td>
+                <td>8.2K</td>
+                <td>28</td>
+                <td>$560</td>
+                <td><button class="btn btn-xs btn-ghost">编辑</button></td>
+              </tr>
+              <tr style="background:var(--red-soft)">
+                <td style="color:var(--red);font-style:italic">（缺少视频）</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-sm btn-accent">➕ 新增视频</button>
+            <button class="btn btn-sm btn-info">➕ 新增代码</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipment Fold Panel 2 -->
+      <div class="fold-panel">
+        <div class="fold-header">
+          <span style="font-size:14px">▶</span>
+          <div class="fold-title">寄样 #2: 快递单号 DEF789012</div>
+          <div class="fold-meta">
+            <span>SKU: BEAUTY-002</span>
+            <span>寄样日期: 2026-10-10</span>
+            <span>要求视频: 3</span>
+            <span class="pill pill-red">缺视频: 3</span>
+            <span class="pill pill-green">缺代码: 0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Action Bar -->
+      <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 0;border-top:1px solid var(--line);margin-top:8px">
+        <button class="btn btn-accent">📦 新增寄样</button>
+        <button class="btn btn-primary">保存</button>
+        <button class="btn btn-ghost">关闭</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

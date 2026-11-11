@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aolon · Mobile Creator Detail</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #fff;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    
+    /* Status Bar */
+    .status-bar {
+      height: 44px;
+      background: #2c3e50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    /* Header */
+    .app-header {
+      background: #3498db;
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-title {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    
+    .header-action {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Content Area */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      background: #f5f5f5;
+    }
+    
+    /* Profile Card */
+    .profile-card {
+      background: #fff;
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      background: #27ae60;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 24px;
+    }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-handle {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    
+    .profile-name {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin-top: 2px;
+    }
+    
+    .profile-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .meta-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    
+    .tag-tier { background: #f39c12; color: #fff; }
+    .tag-status { background: #e8f5e9; color: #2e7d32; }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 12px;
+      background: #fff;
+      margin-bottom: 10px;
+    }
+    
+    .stat-card {
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #7f8c8d;
+      margin-top: 4px;
+    }
+    
+    .stat-blue { background: #e3f2fd; }
+    .stat-blue .stat-value { color: #1565c0; }
+    .stat-green { background: #e8f5e9; }
+    .stat-green .stat-value { color: #2e7d32; }
+    .stat-red { background: #ffebee; }
+    .stat-red .stat-value { color: #c62828; }
+    .stat-yellow { background: #fff8e1; }
+    .stat-yellow .stat-value { color: #f57f17; }
+    
+    /* Info Section */
+    .info-section {
+      background: #fff;
+      margin-bottom: 10px;
+      padding: 14px 16px;
+    }
+    
+    .info-row {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    
+    .info-label {
+      width: 90px;
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+    
+    .info-value {
+      flex: 1;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+    
+    /* Shipment Section */
+    .shipment-section {
+      background: #fff;
+      margin-bottom: 10px;
+    }
+    
+    .shipment-header {
+      padding: 12px 16px;
+      background: #ecf0f1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    
+    .shipment-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .shipment-toggle {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    .shipment-body {
+      padding: 12px 16px;
+    }
+    
+    .shipment-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .shipment-row {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+    }
+    
+    .shipment-label {
+      width: 80px;
+      color: #7f8c8d;
+    }
+    
+    .shipment-value {
+      flex: 1;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+    
+    /* Video List */
+    .video-list {
+      margin-top: 12px;
+    }
+    
+    .video-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 10px;
+    }
+    
+    .video-item:last-child {
+      border-bottom: none;
+    }
+    
+    .video-index {
+      width: 24px;
+      height: 24px;
+      background: #ecf0f1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #7f8c8d;
+    }
+    
+    .video-info {
+      flex: 1;
+    }
+    
+    .video-url {
+      font-size: 12px;
+      color: #3498db;
+      word-break: break-all;
+    }
+    
+    .video-code {
+      font-size: 11px;
+      color: #7f8c8d;
+      margin-top: 2px;
+    }
+    
+    .video-status {
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    
+    .status-complete { background: #e8f5e9; color: #2e7d32; }
+    .status-missing { background: #ffebee; color: #c62828; }
+    
+    /* Action Bar */
+    .action-bar {
+      padding: 12px 16px;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .btn-primary { background: #3498db; color: #fff; }
+    .btn-success { background: #27ae60; color: #fff; }
+    .btn-warning { background: #f39c12; color: #fff; }
+    
+    /* Page Label */
+    .page-label {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 1000;
+    }
+    
+    .page-label .title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-label">
+    <div class="title">Mobile Creator Detail</div>
+    <div>Profile + Shipments + Videos</div>
+  </div>
+  
+  <div class="phone-frame">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>📶 🔋</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="app-header">
+      <button class="back-btn">←</button>
+      <div class="header-title">Creator Detail</div>
+      <button class="header-action">⋮</button>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content">
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-avatar">K</div>
+        <div class="profile-info">
+          <div class="profile-handle">@lifestyle_kate</div>
+          <div class="profile-name">Kate Johnson</div>
+          <div class="profile-meta">
+            <span class="meta-tag tag-tier">S-Tier</span>
+            <span class="meta-tag tag-status">Sample Sent</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-value">5</div>
+          <div class="stat-label">Total Videos</div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Ad Codes</div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-value">2</div>
+          <div class="stat-label">Missing Codes</div>
+        </div>
+        <div class="stat-card stat-yellow">
+          <div class="stat-value">1</div>
+          <div class="stat-label">Missing Videos</div>
+        </div>
+      </div>
+      
+      <!-- Basic Info Section -->
+      <div class="info-section">
+        <div class="info-row">
+          <div class="info-label">WhatsApp</div>
+          <div class="info-value">+1 234 567 8900</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Email</div>
+          <div class="info-value">kate@example.com</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Last Contact</div>
+          <div class="info-value">2 days ago</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">GMV</div>
+          <div class="info-value">$1,250</div>
+        </div>
+      </div>
+      
+      <!-- Shipment 1 -->
+      <div class="shipment-section">
+        <div class="shipment-header">
+          <div class="shipment-title">
+            <span>📦</span>
+            Shipment #001
+          </div>
+          <div class="shipment-toggle">▼</div>
+        </div>
+        <div class="shipment-body">
+          <div class="shipment-info">
+            <div class="shipment-row">
+              <div class="shipment-label">Tracking</div>
+              <div class="shipment-value">SF1234567890</div>
+            </div>
+            <div class="shipment-row">
+              <div class="shipment-label">SKU</div>
+              <div class="shipment-value">BEauty-001</div>
+            </div>
+            <div class="shipment-row">
+              <div class="shipment-label">Sent Date</div>
+              <div class="shipment-value">2026-10-10</div>
+            </div>
+            <div class="shipment-row">
+              <div class="shipment-label">Required</div>
+              <div class="shipment-value">3 videos</div>
+            </div>
+          </div>
+          
+          <div class="video-list">
+            <div class="video-item">
+              <div class="video-index">1</div>
+              <div class="video-info">
+                <div class="video-url">https://tiktok.com/@kate/video/123</div>
+                <div class="video-code">Code: ABC123</div>
+              </div>
+              <div class="video-status status-complete">✓ Complete</div>
+            </div>
+            <div class="video-item">
+              <div class="video-index">2</div>
+              <div class="video-info">
+                <div class="video-url">https://tiktok.com/@kate/video/124</div>
+                <div class="video-code">Code: (missing)</div>
+              </div>
+              <div class="video-status status-missing">No Code</div>
+            </div>
+            <div class="video-item">
+              <div class="video-index">3</div>
+              <div class="video-info">
+                <div class="video-url" style="color:#c62828">(not submitted)</div>
+                <div class="video-code">—</div>
+              </div>
+              <div class="video-status status-missing">Missing</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Shipment 2 -->
+      <div class="shipment-section">
+        <div class="shipment-header">
+          <div class="shipment-title">
+            <span>📦</span>
+            Shipment #002
+          </div>
+          <div class="shipment-toggle">▶</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <button class="action-btn btn-primary">Add Video</button>
+      <button class="action-btn btn-success">Add Code</button>
+      <button class="action-btn btn-warning">Remind</button>
+    </div>
+  </div>
+</body>
+</html>

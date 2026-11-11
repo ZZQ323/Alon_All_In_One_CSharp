@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aolon · 新增寄样</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <!-- Screen Label -->
+  <div class="page-label">
+    <div class="title">新增寄样 · New Shipment Form</div>
+    <div class="desc">模态对话框 · 表单验证 · 下拉选择 SKU/产品代码</div>
+  </div>
+
+  <!-- Navigation Index -->
+  <div class="index-nav">
+    <a href="dashboard.html">📊 工作台</a>
+    <a href="creator-detail.html">👤 达人详情</a>
+    <a href="shipment-form.html">📦 寄样表单</a>
+  </div>
+
+  <!-- Desktop Window (Background) -->
+  <div class="window-frame" style="opacity:0.3;pointer-events:none">
+    <div class="title-bar">
+      <div class="dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="app-title">Aolon 达人管理系统 v3.0</div>
+    </div>
+    <div class="content" style="min-height:400px"></div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">新增寄样 · @lifestyle_kate</div>
+        <button class="close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-label">快递单号:</div>
+          <input type="text" class="form-input" placeholder="请输入快递单号" value="GHI345678">
+        </div>
+        <div class="form-row">
+          <div class="form-label">SKU:</div>
+          <select class="form-input" style="width:200px">
+            <option>BEAUTY-001 · 美白精华</option>
+            <option>BEAUTY-002 · 保湿面膜</option>
+            <option selected>BEAUTY-003 · 防晒霜</option>
+            <option>BEAUTY-004 · 卸妆水</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">产品代码:</div>
+          <select class="form-input" style="width:200px">
+            <option>PROD-001</option>
+            <option selected>PROD-002</option>
+            <option>PROD-003</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">寄样日期:</div>
+          <input type="date" class="form-input" value="2026-10-15" style="width:200px">
+        </div>
+        <div class="form-row">
+          <div class="form-label">要求视频数:</div>
+          <input type="number" class="form-input" value="3" style="width:100px">
+          <span style="font-size:12px;color:var(--ink-3);margin-left:8px">（默认 3 个视频）</span>
+        </div>
+        <div class="form-row">
+          <div class="form-label">寄样状态:</div>
+          <select class="form-input" style="width:200px">
+            <option selected>已寄样</option>
+            <option>待寄样</option>
+            <option>已送达</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label">备注:</div>
+          <textarea class="form-input" rows="3" placeholder="可选备注信息" style="width:300px">达人要求加急，优先跟进</textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost">取消</button>
+        <button class="btn btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

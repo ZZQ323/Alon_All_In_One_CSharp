@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aolon · Mobile New Shipment</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #fff;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    
+    /* Status Bar */
+    .status-bar {
+      height: 44px;
+      background: #2c3e50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    /* Header */
+    .app-header {
+      background: #3498db;
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-title {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    
+    .header-action {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    /* Content Area */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      background: #f5f5f5;
+      padding: 16px;
+    }
+    
+    /* Form Section */
+    .form-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    /* Form Group */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: #7f8c8d;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    .form-label .required {
+      color: #e74c3c;
+      margin-left: 2px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237f8c8d' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    
+    .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    
+    .form-hint {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: 4px;
+    }
+    
+    /* Creator Selector */
+    .creator-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+    }
+    
+    .creator-avatar {
+      width: 36px;
+      height: 36px;
+      background: #27ae60;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    
+    .creator-info {
+      flex: 1;
+    }
+    
+    .creator-handle {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .creator-meta {
+      font-size: 11px;
+      color: #7f8c8d;
+    }
+    
+    .selector-arrow {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    /* Date Picker */
+    .date-picker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .date-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+    
+    .date-today {
+      padding: 10px 14px;
+      background: #ecf0f1;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2c3e50;
+      cursor: pointer;
+    }
+    
+    /* Video Count Selector */
+    .count-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .count-btn {
+      width: 36px;
+      height: 36px;
+      background: #ecf0f1;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .count-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2c3e50;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    /* Submit Button */
+    .submit-section {
+      padding: 16px;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #3498db;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .submit-btn:active {
+      background: #2980b9;
+    }
+    
+    /* Page Label */
+    .page-label {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 1000;
+    }
+    
+    .page-label .title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-label">
+    <div class="title">Mobile New Shipment</div>
+    <div>Form with Creator Selector</div>
+  </div>
+  
+  <div class="phone-frame">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>📶 🔋</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="app-header">
+      <button class="back-btn">←</button>
+      <div class="header-title">New Shipment</div>
+      <button class="header-action">Save</button>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="content">
+      <!-- Creator Selection -->
+      <div class="form-section">
+        <div class="section-title">Select Creator</div>
+        <div class="form-group">
+          <div class="creator-selector">
+            <div class="creator-avatar">K</div>
+            <div class="creator-info">
+              <div class="creator-handle">@lifestyle_kate</div>
+              <div class="creator-meta">S-Tier · Sample Sent</div>
+            </div>
+            <div class="selector-arrow">▼</div>
+          </div>
+          <div class="form-hint">Tap to select a different creator</div>
+        </div>
+      </div>
+      
+      <!-- Shipment Details -->
+      <div class="form-section">
+        <div class="section-title">Shipment Details</div>
+        
+        <div class="form-group">
+          <label class="form-label">Tracking Number <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="e.g., SF1234567890">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">SKU / Product Code <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="e.g., BEauty-001">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Shipment Date <span class="required">*</span></label>
+          <div class="date-picker">
+            <input type="date" class="date-input" value="2026-10-15">
+            <button class="date-today">Today</button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Required Videos</label>
+          <div class="count-selector">
+            <button class="count-btn">−</button>
+            <div class="count-value">3</div>
+            <button class="count-btn">+</button>
+          </div>
+          <div class="form-hint">Default is 3 videos per shipment</div>
+        </div>
+      </div>
+      
+      <!-- Notes -->
+      <div class="form-section">
+        <div class="section-title">Notes (Optional)</div>
+        <div class="form-group">
+          <textarea class="form-textarea" placeholder="Add any notes about this shipment..."></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Submit Button -->
+    <div class="submit-section">
+      <button class="submit-btn">Create Shipment</button>
+    </div>
+  </div>
+</body>
+</html>
