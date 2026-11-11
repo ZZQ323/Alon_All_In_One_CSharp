@@ -2,10 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="TKCompass.App"
              xmlns:local="using:TKCompass"
+             xmlns:conv="using:TKCompass.AppBase.Converters"
              RequestedThemeVariant="Dark">
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Themes/DarkTheme.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!-- 枚举转换器 -->
+            <conv:CooperationStatusConverter x:Key="CooperationStatusConverter" />
+            <conv:TodayStatusConverter x:Key="TodayStatusConverter" />
+            <conv:TodayStatusToBrushConverter x:Key="TodayStatusToBrushConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>

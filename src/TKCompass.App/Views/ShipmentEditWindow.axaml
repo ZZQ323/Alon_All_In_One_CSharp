@@ -12,22 +12,22 @@
         <TextBlock Text="寄样信息" FontSize="18" FontWeight="Bold" Foreground="White"/>
         
         <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="快递单号:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="快递单号:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding TrackingNumber}"/>
             
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="寄样日期:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="寄样日期:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
             <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding SampleDate}"/>
             
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="SKU:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="SKU:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Sku}"/>
             
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="产品名称:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="产品名称:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding ProductName}"/>
             
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="要求视频数:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="要求视频数:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
             <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding RequiredVideoCount}" Minimum="1" Maximum="10"/>
             
-            <TextBlock Grid.Row="5" Grid.Column="0" Text="备注:" Foreground="#B0B0B0" VerticalAlignment="Top"/>
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="备注:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Top"/>
             <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Notes}" 
                      AcceptsReturn="True" TextWrapping="Wrap" Height="80"/>
         </Grid>
@@ -36,9 +36,9 @@
         
         <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,20,0,0">
             <Button Grid.Column="1" Content="保存" Command="{Binding SaveCommand}" 
-                    Background="#0078D4" Foreground="White" Padding="20,8" Margin="0,0,10,0"/>
+                    Background="{DynamicResource AccentBrush}" Foreground="White" Padding="20,8" Margin="0,0,10,0"/>
             <Button Grid.Column="2" Content="取消" Click="OnCancelClick" 
-                    Background="#3F3F46" Foreground="White" Padding="20,8"/>
+                    Background="{DynamicResource SecondarySurfaceBrush}" Foreground="White" Padding="20,8"/>
         </Grid>
     </StackPanel>
 </Window>

@@ -7,66 +7,81 @@
         Title="TKCompass - 达人管理系统"
         Width="1200" Height="800">
     
+    <Window.KeyBindings>
+        <KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
+        <KeyBinding Gesture="Ctrl+R" Command="{Binding RefreshCommand}"/>
+    </Window.KeyBindings>
+    
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
     
-    <Grid ColumnDefinitions="200,*">
-        <!-- 左侧导航栏 -->
-        <Border Grid.Column="0" Background="#1E1E1E">
-            <StackPanel Margin="0,20,0,0">
-                <TextBlock Text="TKCompass" 
-                           FontSize="20" 
-                           FontWeight="Bold" 
-                           Margin="20,0,20,20"/>
-                
-                <Button Content="达人工作台" 
-                        Command="{Binding NavigateToDashboardCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-                
-                <Button Content="今日跟进" 
-                        Command="{Binding NavigateToTodayFollowUpCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-                
-                <Button Content="CRM 管理" 
-                        Command="{Binding NavigateToCrmCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-                
-                <Button Content="Excel 导入" 
-                        Command="{Binding NavigateToExcelImportCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-                
-                <Button Content="配置管理" 
-                        Command="{Binding NavigateToConfigCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-                
-                <Button Content="操作历史" 
-                        Command="{Binding NavigateToOperationHistoryCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-                
-                <Button Content="设置" 
-                        Command="{Binding NavigateToSettingsCommand}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Margin="10,5"/>
-            </StackPanel>
-        </Border>
+    <DockPanel>
+        <!-- 状态栏 -->
+        <TextBlock DockPanel.Dock="Bottom"
+                   Text="{Binding StatusBarMessage}" 
+                   Background="{DynamicResource SecondarySurfaceBrush}" 
+                   Foreground="{DynamicResource SecondaryTextBrush}"
+                   Padding="10,4" FontSize="12"/>
         
-        <!-- 右侧内容区 -->
-        <Border Grid.Column="1" Background="#252525">
-            <ContentControl Content="{Binding CurrentView}"/>
-        </Border>
-    </Grid>
+        <!-- 主内容区 -->
+        <Grid ColumnDefinitions="200,*">
+            <!-- 左侧导航栏 -->
+            <Border Grid.Column="0" Background="{DynamicResource SidebarBrush}">
+                <StackPanel Margin="0,20,0,0">
+                    <TextBlock Text="TKCompass" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               Margin="20,0,20,20"/>
+                    
+                    <Button Content="达人工作台" 
+                            Command="{Binding NavigateToDashboardCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                    
+                    <Button Content="今日跟进" 
+                            Command="{Binding NavigateToTodayFollowUpCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                    
+                    <Button Content="CRM 管理" 
+                            Command="{Binding NavigateToCrmCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                    
+                    <Button Content="Excel 导入" 
+                            Command="{Binding NavigateToExcelImportCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                    
+                    <Button Content="配置管理" 
+                            Command="{Binding NavigateToConfigCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                    
+                    <Button Content="操作历史" 
+                            Command="{Binding NavigateToOperationHistoryCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                    
+                    <Button Content="设置" 
+                            Command="{Binding NavigateToSettingsCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="10,5"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- 右侧内容区 -->
+            <Border Grid.Column="1" Background="{DynamicResource BackgroundBrush}">
+                <ContentControl Content="{Binding CurrentView}"/>
+            </Border>
+        </Grid>
+    </DockPanel>
 </Window>

@@ -1,76 +1,216 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:TKCompass.ViewModels"
+             xmlns:models="using:TKCompass.Domain.Models"
+             xmlns:conv="using:TKCompass.AppBase.Converters"
+             xmlns:controls="using:TKCompass.Controls"
              x:Class="TKCompass.Views.CreatorDetailView"
              x:DataType="vm:CreatorDetailViewModel">
     
-    <ScrollViewer>
-        <StackPanel Margin="20" Spacing="15">
-            
-            <!-- 达人基本信息 -->
-            <Border Background="#2D2D30" CornerRadius="8" Padding="15">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="达人信息" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                    
-                    <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="达人ID:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Creator.Handle}" IsReadOnly="True"/>
+    <Grid>
+        <!-- 主内容 -->
+        <ScrollViewer>
+            <StackPanel Margin="20" Spacing="15">
+                
+                <!-- 达人基本信息 -->
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="15">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="达人信息" FontSize="18" FontWeight="Bold" Foreground="White"/>
                         
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="昵称:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Creator.Nickname}"/>
+                        <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                            <!-- 基本信息 -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="达人ID:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Creator.Handle}" IsReadOnly="True"/>
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="昵称:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Creator.Nickname}"/>
+                            
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="质量等级:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Creator.QualityLevel}"/>
+                            
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="合作状态:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Creator.CooperationStatus, Converter={StaticResource CooperationStatusConverter}}" Foreground="White" VerticalAlignment="Center"/>
+                            
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="TikTok主页:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Creator.TiktokHomepageUrl}"/>
+                            
+                            <!-- V2.0 新增字段 -->
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="国家/地区:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Creator.CountryRegion}"/>
+                            
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="内容分类:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Creator.ContentCategory}"/>
+                            
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="来源渠道:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Creator.SourceChannel}"/>
+                            
+                            <TextBlock Grid.Row="8" Grid.Column="0" Text="佣金比例:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Creator.CommissionRate}"/>
+                            
+                            <TextBlock Grid.Row="9" Grid.Column="0" Text="语种:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Creator.PreferredLanguage}"/>
+                            
+                            <TextBlock Grid.Row="10" Grid.Column="0" Text="下次跟进:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                            <DatePicker Grid.Row="10" Grid.Column="1" SelectedDate="{Binding Creator.NextFollowUpDate}"/>
+                            
+                            <TextBlock Grid.Row="11" Grid.Column="0" Text="达人备注:" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Top"/>
+                            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Creator.CreatorNotes}" 
+                                     AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                
+                <!-- 寄样记录（折叠栏） -->
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="15">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="寄样记录" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                            <Button Grid.Column="1" Content="+ 新增寄样" Command="{Binding AddShipmentCommand}" 
+                                    Background="{DynamicResource AccentBrush}" Foreground="White" Padding="10,5"/>
+                        </Grid>
                         
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="质量等级:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Creator.QualityLevel}"/>
+                        <!-- 空数据提示 -->
+                        <TextBlock Text="暂无寄样记录，点击 &quot;+ 新增寄样&quot; 添加"
+                                   Foreground="{DynamicResource TertiaryTextBrush}" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,20"
+                                   IsVisible="{Binding HasNoShipments}"/>
                         
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="合作状态:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Creator.CooperationStatus}" Foreground="White" VerticalAlignment="Center"/>
+                        <ItemsControl ItemsSource="{Binding Shipments}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:Shipment">
+                                    <Expander Margin="0,5" Background="{DynamicResource SidebarBrush}">
+                                        <Expander.Header>
+                                            <Grid ColumnDefinitions="*,Auto,Auto,Auto" Width="600">
+                                                <TextBlock Text="{Binding TrackingNumber, FallbackValue='无单号'}" Foreground="White" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding SampleDate}" Foreground="{DynamicResource SecondaryTextBrush}" Margin="10,0" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Sku}" Foreground="{DynamicResource PlaceholderTextBrush}" Margin="10,0" VerticalAlignment="Center"/>
+                                                <Button Grid.Column="3" Content="删除" 
+                                                        Command="{Binding $parent[ItemsControl].((vm:CreatorDetailViewModel)DataContext).DeleteShipmentCommand}" 
+                                                        CommandParameter="{Binding}" Foreground="{DynamicResource ErrorBrush}" Background="Transparent"/>
+                                            </Grid>
+                                        </Expander.Header>
+                                        <StackPanel Margin="10" Spacing="5">
+                                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5">
+                                                <TextBlock Text="快递单号:" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding TrackingNumber}"/>
+                                                
+                                                <TextBlock Grid.Row="1" Text="产品代码:" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Sku}"/>
+                                                
+                                                <TextBlock Grid.Row="2" Text="要求视频数:" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <NumericUpDown Grid.Column="1" Grid.Row="2" Value="{Binding RequiredVideoCount}" Minimum="1" Maximum="20"/>
+                                                
+                                                <TextBlock Grid.Row="3" Text="备注:" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                                <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Notes}" AcceptsReturn="True"/>
+                                            </Grid>
+                                            
+                                            <!-- 寄样关联的视频 -->
+                                            <TextBlock Text="关联视频:" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,10,0,5"/>
+                                            <Button Content="+ 添加视频" 
+                                                    Command="{Binding $parent[ItemsControl].((vm:CreatorDetailViewModel)DataContext).AddVideoCommand}" 
+                                                    CommandParameter="{Binding}"
+                                                    Background="#28A745" Foreground="White" Padding="10,5" HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </Expander>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                
+                <!-- 视频列表 -->
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="15">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="视频列表" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                            <Button Grid.Column="1" Content="+ 新增视频" Command="{Binding AddVideoCommand}" 
+                                    Background="#28A745" Foreground="White" Padding="10,5"/>
+                        </Grid>
                         
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="TikTok主页:" Foreground="#B0B0B0" VerticalAlignment="Center"/>
-                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Creator.TiktokHomepageUrl}"/>
-                    </Grid>
-                </StackPanel>
-            </Border>
-            
-            <!-- 寄样记录（折叠栏） -->
-            <Border Background="#2D2D30" CornerRadius="8" Padding="15">
-                <StackPanel Spacing="10">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="寄样记录" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <Button Grid.Column="1" Content="+ 新增寄样" Command="{Binding AddShipmentCommand}" 
-                                Background="#0078D4" Foreground="White" Padding="10,5"/>
-                    </Grid>
-                    
-                    <ItemsControl ItemsSource="{Binding Shipments}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Expander Margin="0,5" Background="#1E1E1E">
-                                    <Expander.Header>
-                                        <Grid ColumnDefinitions="*,Auto,Auto" Width="600">
-                                            <TextBlock Text="{Binding TrackingNumber}" Foreground="White" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding SampleDate}" Foreground="#B0B0B0" Margin="10,0" VerticalAlignment="Center"/>
-                                            <Button Grid.Column="2" Content="删除" Command="{Binding $parent[ItemsControl].((vm:CreatorDetailViewModel)DataContext).DeleteShipmentCommand}" 
-                                                    CommandParameter="{Binding}" Foreground="#FF6B6B" Background="Transparent"/>
+                        <!-- 空数据提示 -->
+                        <TextBlock Text="暂无视频记录" 
+                                   Foreground="{DynamicResource TertiaryTextBrush}" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,20"
+                                   IsVisible="{Binding HasNoVideos}"/>
+                        
+                        <ItemsControl ItemsSource="{Binding Videos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:Video">
+                                    <Border Background="{DynamicResource SidebarBrush}" CornerRadius="4" Padding="10" Margin="0,3">
+                                        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding VideoUrl}" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Orientation="Horizontal" Spacing="15" Margin="0,5,0,0">
+                                                    <TextBlock Foreground="{DynamicResource SecondaryTextBrush}">
+                                                        <Run Text="发布日期: "/><Run Text="{Binding VideoDate}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Foreground="{DynamicResource SecondaryTextBrush}">
+                                                        <Run Text="观看: "/><Run Text="{Binding Views}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Foreground="{DynamicResource SecondaryTextBrush}">
+                                                        <Run Text="订单: "/><Run Text="{Binding Orders}"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding AdCode}" Foreground="{DynamicResource PlaceholderTextBrush}" VerticalAlignment="Center" Margin="10,0"/>
+                                            <CheckBox Grid.Column="2" Content="有效" IsChecked="{Binding IsEffective}" VerticalAlignment="Center"/>
+                                            <Button Grid.Column="3" Content="删除" 
+                                                    Command="{Binding $parent[ItemsControl].((vm:CreatorDetailViewModel)DataContext).DeleteVideoCommand}" 
+                                                    CommandParameter="{Binding}" Foreground="{DynamicResource ErrorBrush}" Background="Transparent"/>
                                         </Grid>
-                                    </Expander.Header>
-                                    <StackPanel Margin="10" Spacing="5">
-                                        <TextBlock Foreground="#B0B0B0">
-                                            <Run Text="SKU: "/><Run Text="{Binding Sku}"/>
-                                        </TextBlock>
-                                        <TextBlock Foreground="#B0B0B0">
-                                            <Run Text="要求视频数: "/><Run Text="{Binding RequiredVideoCount}"/>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Expander>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                
+                <!-- 联系方式（动态列表） -->
+                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="15">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="联系方式" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                            <Button Grid.Column="1" Content="+ 新增联系方式" Command="{Binding AddContactCommand}" 
+                                    CommandParameter="WhatsApp"
+                                    Background="{DynamicResource AccentBrush}" Foreground="White" Padding="10,5"/>
+                        </Grid>
+                        
+                        <!-- 空数据提示 -->
+                        <TextBlock Text="暂无联系方式" 
+                                   Foreground="{DynamicResource TertiaryTextBrush}" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,20"
+                                   IsVisible="{Binding HasNoContacts}"/>
+                        
+                        <ItemsControl ItemsSource="{Binding Contacts}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:CreatorContact">
+                                    <Grid ColumnDefinitions="120,*,Auto" Margin="0,5">
+                                        <TextBlock Text="{Binding ContactType}" Foreground="{DynamicResource SecondaryTextBrush}" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1" Text="{Binding ContactValue}" Margin="10,0"/>
+                                        <Button Grid.Column="2" Content="删除" 
+                                                Command="{Binding $parent[ItemsControl].((vm:CreatorDetailViewModel)DataContext).DeleteContactCommand}"
+                                                CommandParameter="{Binding}"
+                                                Foreground="{DynamicResource ErrorBrush}" Background="Transparent" Padding="10,5"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                
+                <!-- 操作按钮 -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                    <Button Content="取消" Background="#555" Foreground="White" Padding="20,8"/>
+                    <Button Content="保存" Command="{Binding SaveCommand}" 
+                            Background="{DynamicResource AccentBrush}" Foreground="White" 
+                            Padding="20,8" FontSize="14"/>
                 </StackPanel>
-            </Border>
-            
-            <!-- 保存按钮 -->
-            <Button Content="保存" Command="{Binding SaveCommand}" 
-                    Background="#0078D4" Foreground="White" 
-                    HorizontalAlignment="Right" Padding="20,8" FontSize="14"/>
-        </StackPanel>
-    </ScrollViewer>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- 加载遮罩层 -->
+        <Border Background="{DynamicResource OverlayBrush}" IsVisible="{Binding IsLoading}" ZIndex="999">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="4"/>
+                <TextBlock Text="加载中..." Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

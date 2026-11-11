@@ -21,7 +21,9 @@ public class CreatorRepository : BaseRepository<Creator>, ICreatorRepository
 
     public async Task<IEnumerable<Creator>> GetAllIncludeDeletedAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet
+            .Include(c => c.Shipments)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<Creator>> FindByStatusAsync(CooperationStatus status)

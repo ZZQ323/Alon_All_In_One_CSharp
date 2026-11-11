@@ -1,7 +1,7 @@
 # TKCompass 迭代 1.0 — 当前状态总结
 
-> 日期：2026-11-10  
-> 状态：🟢 ViewModel 业务逻辑层 100% 完成，XAML 视图绑定待完善
+> 日期：2026-11-11  
+> 状态：🟢 P0 完成 100%，P1 完成 100%（任务 8-12 全部已完成），编译验证通过
 
 ---
 
@@ -77,58 +77,255 @@ TKCompass/
 
 ---
 
-## 三、当前待完善项
+## 三、待办任务清单（按优先级）
 
-### 🟡 XAML 视图绑定（优先级高）
+> 最后更新：2026-11-11
+> 来源：原 TODO.md 已整合至此文档
 
-ViewModel 业务逻辑已就绪，但 XAML 视图的绑定需要审查和完善：
+### 🔴 P0: XAML 视图绑定与交互完善
 
-| 视图 | 需完善内容 |
-|------|-----------|
-| CreatorDashboardView | DataGrid 列绑定、Tab 切换绑定、筛选栏绑定、批量操作按钮绑定 |
-| CreatorDetailView | 折叠栏（Expander）绑定、视频列表绑定、联系方式动态列表绑定 |
-| CreatorEditWindow | 表单字段绑定、验证错误提示、保存/取消按钮 |
-| ConfigView | 4 个 Tab 的 DataGrid 绑定、新增表单绑定 |
-| OperationHistoryView | 操作日志列表绑定、撤销按钮绑定 |
-| ExcelImportView | 文件路径绑定、预览 DataGrid 绑定、导入进度绑定 |
-| TodayFollowUpView | 跟进组列表绑定、分页控件绑定、状态标记按钮 |
+#### 任务 1: 达人工作台 XAML 绑定（CreatorDashboardView）
 
-### 🟡 待修复的 TODO 项
+**状态**：✅ 完成（2026-11-11 更新）
 
-| 位置 | TODO 内容 |
-|------|----------|
-| CreatorDashboardViewModel | 产品代码多选筛选逻辑（`SelectedProductCodes` 关联筛选） |
-| CreatorDashboardViewModel | 产品名搜索筛选逻辑（`ProductNameSearch` 关联寄样 SKU） |
-| CreatorDetailViewModel | `AddShipmentAsync` 参数传入（快递号、产品代码等需从对话框获取） |
-| CreatorDetailViewModel | `AddVideoAsync` 参数传入（视频链接、关联寄样需从对话框获取） |
-| CrmViewModel | `FilterCreators()` 筛选逻辑实现 |
-| ExcelImportViewModel | `SelectFileAsync` 文件选择对话框集成（需 Avalonia Window 引用） |
+- [x] DataGrid 列绑定（Handle/Nickname/QualityLevel/CooperationStatus 等）
+- [x] 6 个 Tab 的 ItemsSource 绑定（AllItems/FilteredItems/DeliveredItems 等）
+- [x] 筛选栏控件绑定（FilterViewModel 属性）
+- [x] 统计标签 TextBlock 绑定
+- [x] 枚举转换器应用（CooperationStatusConverter、TodayStatusConverter）
+- [x] 加载指示器（IsLoading 绑定）
+- [x] 空数据提示 UI（HasFilteredData/HasDeliveredData 等）
+- [x] 今日状态列（TodayStatus + TodayStatusConverter）
+- [x] 批量操作按钮 Command 绑定（已绑定 BatchDeleteCommand/BatchRestoreCommand，IsEnabled 绑定 HasSelection）
+- [x] 行双击导航到详情页（已实现 DoubleTapped 事件，触发 OpenCreatorDetailCommand）
+
+**已完成工作**：
+1. 在 App.axaml 中全局注册了 3 个枚举转换器
+2. 为所有涉及"合作状态"的 DataGrid 列应用了 CooperationStatusConverter
+3. 在"今日提醒"Tab 添加了"今日状态"列并应用 TodayStatusConverter
+4. 添加了 IsLoading 绑定的加载指示器覆盖层
+5. 为每个 Tab 添加了空数据提示 TextBlock
+6. 修正了 EnumConverters.cs 中错误的枚举值（使其与 Domain 层真实枚举匹配）
+
+**预估工时**：1-2 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 2: 达人详情页 XAML 绑定（CreatorDetailView）
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+- [x] 达人基本信息区域绑定
+- [x] 寄样折叠栏（Expander）ItemsSource 绑定
+- [x] 每个折叠栏内的视频列表 DataGrid 绑定
+- [x] 联系方式动态列表绑定（ItemsControl + 删除按钮）
+- [x] 新增寄样/视频按钮 Command 绑定
+- [x] 合作状态转换器应用
+- [x] V2.0 新增字段展示
+- [x] IsLoading 加载遮罩层
+
+**已完成工作**：
+1. 全面重写视图 XAML，应用合作状态转换器
+2. 补充了 V2.0 新增字段（产品代码、产品名、要求视频数等）
+3. 完善了寄样记录折叠栏及视频列表展示
+4. 添加了 IsLoading 加载遮罩层
+
+**预估工时**：1 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 3: 达人编辑对话框 XAML 绑定（CreatorEditWindow）
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+- [x] 表单字段 TextBox/ComboBox 绑定
+- [x] 验证错误提示（DataValidation）
+- [x] 保存/取消按钮 Command 绑定
+- [x] 对话框关闭行为（RequestClose → Window.Close）
+- [x] V2.0 新增字段表单
+- [x] 枚举转换器应用
+
+**已完成工作**：
+1. 全面重写视图 XAML，应用合作状态转换器
+2. 补充了 V2.0 新增字段表单控件
+3. 完善了表单字段验证错误提示
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 4: 配置管理 XAML 绑定（ConfigView）
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+- [x] 4 个 Tab 的 DataGrid ItemsSource 绑定
+- [x] 新增表单（TextBox + Button）绑定
+- [x] 删除按钮 Command 绑定（CommandParameter 传递选中项）
+- [x] V2.0 新增字段补充
+
+**已完成工作**：
+1. 全面重写视图 XAML
+2. 补充了 V2.0 新增字段（产品代码、产品名等）
+3. 完善了新增/删除表单绑定
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 5: 操作历史 XAML 绑定（OperationHistoryView）
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+- [x] 操作日志列表 DataGrid 绑定
+- [x] 撤销按钮 Command 绑定
+- [x] 分组显示（按 GroupId 聚合）
+- [x] 状态消息样式简化
+
+**已完成工作**：
+1. 简化了状态消息的 Foreground 绑定，改为固定灰色 #B0B0B0
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 6: Excel 导入 XAML 绑定（ExcelImportView）
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+- [x] 文件路径 TextBox 绑定
+- [x] 预览 DataGrid ItemsSource 绑定
+- [x] 导入按钮 Command 绑定
+- [x] 导入进度/结果显示
+- [x] 编译错误修复（移除不存在的转换器引用）
+- [x] 空数据提示
+- [x] 导入中加载遮罩层
+
+**已完成工作**：
+1. 修复了原视图中引用不存在转换器的编译错误
+2. 移除了依赖这些转换器的"状态"列
+3. 为预览区添加了 ScrollViewer 并为 DataGrid 限制了 MaxHeight
+4. 添加了无预览数据时的空提示
+5. 添加了基于 IsImporting 状态的导入中加载遮罩层
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 7: 今日跟进 XAML 绑定（TodayFollowUpView）
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+- [x] 跟进组列表 ItemsControl 绑定
+- [x] 分页控件绑定（CurrentPage/TotalPages）
+- [x] 状态标记按钮 Command 绑定（Acknowledged/Completed）
+- [x] 统计标签绑定
+- [x] 空数据提示
+
+**已完成工作**：
+1. 修复了分页按钮错误的 IsEnabled 绑定逻辑
+2. 添加了无跟进数据时的空提示
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+### 🟡 P1: ViewModel TODO 项修复
+
+#### 任务 8: 产品代码多选筛选逻辑
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+**位置**：`CreatorDashboardViewModel.ApplyFilter()`
+
+- [x] 当 `SelectedProductCodes` 有值时，筛选寄样 SKU 包含选中产品代码的达人
+- [x] 修复 `CreatorRepository.GetAllIncludeDeletedAsync()` 添加 `.Include(c => c.Shipments)` 确保导航属性加载
+- [x] 实现逻辑：遍历 `creator.Shipments`，将 `Shipment.Sku` 按逗号 Split 后与筛选条件匹配
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 9: 产品名搜索筛选逻辑
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+**位置**：`CreatorDashboardViewModel.ApplyFilter()`
+
+- [x] 当 `ProductNameSearch` 有值时，筛选寄样 ProductName 包含关键词的达人
+- [x] 实现逻辑：遍历 `creator.Shipments`，对 `Shipment.ProductName` 进行模糊匹配（Contains）
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 10: 达人详情页新增寄样/视频弹出编辑窗口
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+**位置**：`CreatorDetailViewModel` + `CreatorDetailView.axaml.cs`
+
+- [x] 实现 `OpenShipmentEditRequested` / `OpenVideoEditRequested` 事件
+- [x] 创建 `ShipmentEditWindow` 和 `VideoEditWindow` 弹出编辑窗口
+- [x] 在 View 层通过 `ShowDialog` 打开编辑窗口，获取用户输入
+- [x] 编辑窗口关闭后自动刷新达人详情数据
+
+**预估工时**：1 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 11: CRM 视图筛选逻辑
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+**位置**：`CrmViewModel.FilterCreators()`
+
+- [x] 实现 `_allCreators` 缓存，保存完整达人列表
+- [x] `FilterCreators()` 支持按 SelectedLevel 过滤 QualityLevel
+- [x] `FilterCreators()` 支持按 SearchText 过滤 Handle/Nickname
+- [x] 组合筛选条件（等级 + 搜索文本同时生效）
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+#### 任务 12: Excel 导入文件选择对话框
+
+**状态**：✅ 完成（2026-11-11 更新）
+
+**位置**：`ExcelImportViewModel.SelectFileAsync()`
+
+- [x] 在 View 层实现 `OnSelectFileClick` 事件处理
+- [x] 使用 Avalonia `StorageProvider.OpenFilePickerAsync` 选择 Excel 文件
+- [x] 支持 `.xlsx` 和 `.xls` 文件类型过滤
+
+**预估工时**：0.5 天 → 实际完成 0.5 天
+
+---
+
+### 🟢 ### P2: UI 美化与体验优化 | 3/3 | 100% ✅) |
+| 🔵 P3 打包发布 | 2 | 1.5 天 | ⏳ 0/2 (0%) |
+| **合计** | **17** | **11.5-12.5 天** | **12/17 (71%)** |
 
 ---
 
 ## 四、下一步行动
 
-### 🔴 优先级 1：XAML 绑定审查与完善
+### ✅ 已完成
 
-1. 逐一检查每个 View 的 XAML 文件
-2. 确保 DataGrid 列与 ViewModel 属性正确绑定
-3. 确保命令绑定（Button.Command）与 RelayCommand 对应
-4. 确保 Tab 切换、筛选栏、折叠栏的交互绑定正确
-5. 使用 `$parent[UserControl].DataContext` 处理嵌套绑定
+1. **XAML 视图绑定完善**（任务 1-7）— ✅ 全部完成
+2. **ViewModel TODO 项修复**（任务 8-12）— ✅ 全部完成
+3. **编译验证** — ✅ 0 错误，25 个警告（AVLN5001 过时属性，不影响运行）
 
-### 🟡 优先级 2：修复 TODO 项
+### 🟢 当前迭代目标（P2 UI 美化）
 
-1. 完善达人工作台的产品代码/产品名筛选逻辑
-2. 完善达人详情页的新增寄样/视频对话框参数传入
-3. 实现 CRM 视图的筛选逻辑
-4. 集成文件选择对话框
+3. **UI 美化与体验优化**（任务 13-15）
+   - 深色主题适配
+   - 加载状态指示器完善
+   - 错误提示与快捷键
 
-### 🟢 优先级 3：UI 美化与体验优化
+### 🔵 后续迭代
 
-1. 深色主题适配
-2. 加载状态指示器
-3. 错误提示友好化
-4. 快捷键绑定
+4. **打包发布准备**（任务 16-17）
 
 ---
 
@@ -185,4 +382,4 @@ private async Task LoadDataAsync()
 
 ---
 
-*文档状态：ViewModel 业务逻辑层 100% 完成，下一步完善 XAML 视图绑定*
+*文档状态：P0 全部完成，P1 全部完成（5/5），编译验证通过（0 错误）。下一步进入 P2 UI 美化阶段*

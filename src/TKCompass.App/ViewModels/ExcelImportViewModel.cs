@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using TKCompass.Domain.Models;
 using TKCompass.Domain.Services;
 using TKCompass.Excel;
+using TKCompass.Services;
 
 namespace TKCompass.ViewModels;
 
@@ -20,6 +21,7 @@ public partial class ExcelImportViewModel : ObservableObject
     private readonly ICreatorContactService _contactService;
     private readonly IOperationLogService _operationLogService;
     private readonly IMessenger _messenger;
+    private readonly INotificationService? _notificationService;
 
     [ObservableProperty]
     private string _filePath = string.Empty;
@@ -29,6 +31,14 @@ public partial class ExcelImportViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isImporting;
+
+    // Alias for standardized loading overlay binding
+    public bool IsLoading => IsImporting;
+
+    partial void OnIsImportingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsLoading));
+    }
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -43,7 +53,8 @@ public partial class ExcelImportViewModel : ObservableObject
         IVideoService videoService,
         ICreatorContactService contactService,
         IOperationLogService operationLogService,
-        IMessenger messenger)
+        IMessenger messenger,
+        INotificationService? notificationService = null)
     {
         _excelImportService = excelImportService;
         _creatorService = creatorService;
@@ -52,6 +63,7 @@ public partial class ExcelImportViewModel : ObservableObject
         _contactService = contactService;
         _operationLogService = operationLogService;
         _messenger = messenger;
+        _notificationService = notificationService;
     }
 
     [RelayCommand]
@@ -230,6 +242,14 @@ public partial class ExcelImportViewModel : ObservableObject
             StatusMessage = $"导入成功：{creatorCount} 个达人，{shipmentCount} 个寄样，{videoCount} 个视频";
             _messenger.Send(new CreatorUpdatedMessage());
             
+            // 显示成功通知
+            if (_notificationService != null)
+            {
+                await _notificationService.ShowInfoAsync(
+                    "导入成功", 
+                    $"成功导入 {creatorCount} 个达人，{shipmentCount} 个寄样，{videoCount} 个视频");
+            }
+            
             // 清空预览
             Preview = null;
             FilePath = string.Empty;
@@ -238,6 +258,8 @@ public partial class ExcelImportViewModel : ObservableObject
         {
             StatusMessage = $"导入失败：{ex.Message}";
             HasErrors = true;
+            if (_notificationService != null)
+                await _notificationService.ShowErrorAsync("导入失败", ex.Message);
         }
         finally
         {

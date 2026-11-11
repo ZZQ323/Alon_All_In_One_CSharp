@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using TKCompass.Domain.Models;
 using TKCompass.Domain.Services;
+using TKCompass.Services;
 
 namespace TKCompass.ViewModels;
 
@@ -19,6 +20,7 @@ public partial class ConfigViewModel : ObservableObject
     private readonly IProductCodeService _productCodeService;
     private readonly IDictionaryService _dictionaryService;
     private readonly IMessenger _messenger;
+    private readonly INotificationService? _notificationService;
 
     [ObservableProperty]
     private ObservableCollection<CreatorType> _creatorTypes = new();
@@ -87,6 +89,9 @@ public partial class ConfigViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasError;
 
+    [ObservableProperty]
+    private bool _isLoading;
+
     public ConfigViewModel(
         ICreatorTypeService creatorTypeService,
         IProductCodeService productCodeService,
@@ -102,6 +107,7 @@ public partial class ConfigViewModel : ObservableObject
 
     private async Task LoadDataAsync()
     {
+        IsLoading = true;
         HasError = false;
         ErrorMessage = "";
         try
@@ -122,6 +128,10 @@ public partial class ConfigViewModel : ObservableObject
         {
             ErrorMessage = $"加载配置失败: {ex.Message}";
             HasError = true;
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 

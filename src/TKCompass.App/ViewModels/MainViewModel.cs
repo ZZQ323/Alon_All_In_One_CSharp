@@ -1,12 +1,15 @@
+using System.Threading.Tasks;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using TKCompass.Domain.Services;
 using TKCompass.Excel;
+using TKCompass.Services;
 
 namespace TKCompass.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDetailMessage>
 {
     private readonly ICreatorService _creatorService;
     private readonly ICreatorTypeService _creatorTypeService;
@@ -19,6 +22,10 @@ public partial class MainViewModel : ObservableObject
     private readonly ICreatorContactService _contactService;
     private readonly ExcelImportService _excelImportService;
     private readonly IMessenger _messenger;
+    private readonly INotificationService? _notificationService;
+
+    [ObservableProperty]
+    private string _statusBarMessage = "就绪";
 
     [ObservableProperty]
     private CreatorDashboardViewModel _dashboard;
@@ -56,7 +63,8 @@ public partial class MainViewModel : ObservableObject
         ICreatorContactService contactService,
         ExcelImportService excelImportService,
         IUndoService undoService,
-        IMessenger messenger)
+        IMessenger messenger,
+        INotificationService? notificationService = null)
     {
         _creatorService = creatorService;
         _creatorTypeService = creatorTypeService;
@@ -69,6 +77,7 @@ public partial class MainViewModel : ObservableObject
         _contactService = contactService;
         _excelImportService = excelImportService;
         _messenger = messenger;
+        _notificationService = notificationService;
 
         _dashboard = new CreatorDashboardViewModel(creatorService, messenger);
         _config = new ConfigViewModel(creatorTypeService, productCodeService, dictionaryService, messenger);
@@ -89,45 +98,78 @@ public partial class MainViewModel : ObservableObject
         _currentView = _dashboard;
     }
 
+    public void SetStatus(string message)
+    {
+        StatusBarMessage = message;
+        // 5秒后自动恢复
+        _ = Task.Delay(5000).ContinueWith(_ =>
+            Dispatcher.UIThread.Post(() => StatusBarMessage = "就绪"));
+    }
+
     [RelayCommand]
     private void NavigateToDashboard()
     {
         CurrentView = Dashboard;
+        SetStatus("已切换到 达人工作台 页面");
     }
 
     [RelayCommand]
     private void NavigateToConfig()
     {
         CurrentView = Config;
+        SetStatus("已切换到 配置管理 页面");
     }
 
     [RelayCommand]
     private void NavigateToSettings()
     {
         CurrentView = Settings;
+        SetStatus("已切换到 设置 页面");
     }
 
     [RelayCommand]
     private void NavigateToOperationHistory()
     {
         CurrentView = OperationHistory;
+        SetStatus("已切换到 操作历史 页面");
     }
 
     [RelayCommand]
     private void NavigateToExcelImport()
     {
         CurrentView = ExcelImport;
+        SetStatus("已切换到 Excel 导入 页面");
     }
 
     [RelayCommand]
     private void NavigateToCrm()
     {
         CurrentView = Crm;
+        SetStatus("已切换到 CRM 管理 页面");
     }
 
     [RelayCommand]
     private void NavigateToTodayFollowUp()
     {
         CurrentView = TodayFollowUp;
+        SetStatus("已切换到 今日跟进 页面");
+    }
+
+    [RelayCommand]
+    private void Refresh()
+    {
+        // 触发当前视图刷新 - 通过重新赋值 CurrentView 来触发 UI 刷新
+        var current = CurrentView;
+        CurrentView = null!;
+        CurrentView = current;
+        SetStatus("已刷新当前页面");
+    }
+
+    public async void Receive(OpenCreatorDetailMessage message)
+    {
+        var detailVm = new CreatorDetailViewModel(_creatorService, _shipmentService, _videoService, _contactService, _productCodeService, _messenger);
+        await detailVm.LoadCreatorAsync(message.CreatorId);
+        CurrentView = detailVm;
+        SetStatus("已打开达人详情");
     }
 }

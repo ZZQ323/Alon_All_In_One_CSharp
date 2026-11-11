@@ -8,20 +8,22 @@
         <vm:TodayFollowUpViewModel />
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto,Auto,*">
-        <!-- 顶部筛选区 -->
-        <Border Grid.Row="0" Background="#2D2D30" Padding="15">
+    <Panel>
+        <!-- 主内容 -->
+        <Grid RowDefinitions="Auto,Auto,*">
+            <!-- 顶部筛选区 -->
+            <Border Grid.Row="0" Background="{DynamicResource SurfaceBrush}" Padding="15">
             <StackPanel>
                 <TextBlock Text="今日跟进" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,0,0,15"/>
                 
                 <WrapPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
-                        <TextBlock Text="从：" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#B0B0B0"/>
+                        <TextBlock Text="从：" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource SecondaryTextBrush}"/>
                         <DatePicker SelectedDate="{Binding FromDate}" Width="150"/>
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
-                        <TextBlock Text="至：" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#B0B0B0"/>
+                        <TextBlock Text="至：" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="{DynamicResource SecondaryTextBrush}"/>
                         <DatePicker SelectedDate="{Binding ToDate}" Width="150"/>
                     </StackPanel>
                     
@@ -32,93 +34,111 @@
                 <!-- 统计标签 -->
                 <StackPanel Orientation="Horizontal" Spacing="30">
                     <StackPanel>
-                        <TextBlock Text="总数" FontSize="12" Foreground="#B0B0B0"/>
+                        <TextBlock Text="总数" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
                         <TextBlock Text="{Binding TotalCount}" FontSize="20" FontWeight="Bold" Foreground="White"/>
                     </StackPanel>
                     <StackPanel>
-                        <TextBlock Text="待处理" FontSize="12" Foreground="#B0B0B0"/>
-                        <TextBlock Text="{Binding PendingCount}" FontSize="20" FontWeight="Bold" Foreground="#FF9800"/>
+                        <TextBlock Text="待处理" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <TextBlock Text="{Binding PendingCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}"/>
                     </StackPanel>
                     <StackPanel>
-                        <TextBlock Text="已确认" FontSize="12" Foreground="#B0B0B0"/>
-                        <TextBlock Text="{Binding AcknowledgedCount}" FontSize="20" FontWeight="Bold" Foreground="#4CAF50"/>
+                        <TextBlock Text="已确认" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <TextBlock Text="{Binding AcknowledgedCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
         </Border>
         
         <!-- 分页控制 -->
-        <Border Grid.Row="1" Background="#1E1E1E" Padding="10">
+        <Border Grid.Row="1" Background="{DynamicResource SidebarBrush}" Padding="10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
-                <Button Content="上一页" Command="{Binding PreviousPageCommand}" 
-                        IsEnabled="{Binding CurrentPage, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                <TextBlock Text="{Binding PageInfo}" VerticalAlignment="Center" Foreground="#B0B0B0"/>
-                <Button Content="下一页" Command="{Binding NextPageCommand}" 
-                        IsEnabled="{Binding CurrentPage, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                <Button Content="上一页" Command="{Binding PreviousPageCommand}"/>
+                <TextBlock Text="{Binding PageInfo}" VerticalAlignment="Center" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                <Button Content="下一页" Command="{Binding NextPageCommand}"/>
             </StackPanel>
         </Border>
         
         <!-- 分组展示区 -->
-        <ScrollViewer Grid.Row="2">
-            <ItemsControl x:Name="OuterItemsControl" ItemsSource="{Binding FollowUpGroups}" Margin="15">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="#2D2D30" CornerRadius="5" Padding="15" Margin="0,0,0,15">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Reason}" FontSize="16" FontWeight="Bold" 
-                                           Foreground="White" Margin="0,0,0,10"/>
-                                
-                                <ItemsControl ItemsSource="{Binding Items}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="#1E1E1E" CornerRadius="3" Padding="10" Margin="0,0,0,5">
-                                                <Grid ColumnDefinitions="*,Auto">
-                                                    <StackPanel Grid.Column="0">
-                                                        <TextBlock Foreground="White" FontWeight="SemiBold">
-                                                            <Run Text="{Binding Creator.Handle}"/>
-                                                            <Run Text=" - "/>
-                                                            <Run Text="{Binding Creator.Nickname}"/>
-                                                        </TextBlock>
-                                                        
-                                                        <TextBlock Text="{Binding FollowUpReason}" 
-                                                                   Foreground="#B0B0B0" FontSize="12" 
-                                                                   Margin="0,5,0,0"/>
-                                                        
-                                                        <StackPanel Orientation="Horizontal" Spacing="15" Margin="0,5,0,0">
-                                                            <TextBlock Foreground="#888888" FontSize="11">
-                                                                <Run Text="等级: "/>
-                                                                <Run Text="{Binding Creator.QualityLevel}"/>
+        <Panel Grid.Row="2">
+            <!-- 有数据时显示分组列表 -->
+            <ScrollViewer IsVisible="{Binding FollowUpGroups.Count, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <ItemsControl ItemsSource="{Binding FollowUpGroups}" Margin="15">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="5" Padding="15" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Reason}" FontSize="16" FontWeight="Bold" 
+                                               Foreground="White" Margin="0,0,0,10"/>
+                                    
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{DynamicResource SidebarBrush}" CornerRadius="3" Padding="10" Margin="0,0,0,5">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <StackPanel Grid.Column="0">
+                                                            <TextBlock Foreground="White" FontWeight="SemiBold">
+                                                                <Run Text="{Binding Creator.Handle}"/>
+                                                                <Run Text=" - "/>
+                                                                <Run Text="{Binding Creator.Nickname}"/>
                                                             </TextBlock>
-                                                            <TextBlock Foreground="#888888" FontSize="11">
-                                                                <Run Text="寄样数: "/>
-                                                                <Run Text="{Binding Shipments.Count}"/>
-                                                            </TextBlock>
-                                                            <TextBlock Foreground="#888888" FontSize="11">
-                                                                <Run Text="视频数: "/>
-                                                                <Run Text="{Binding Videos.Count}"/>
-                                                            </TextBlock>
+                                                            
+                                                            <TextBlock Text="{Binding FollowUpReason}" 
+                                                                       Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" 
+                                                                       Margin="0,5,0,0"/>
+                                                            
+                                                            <StackPanel Orientation="Horizontal" Spacing="15" Margin="0,5,0,0">
+                                                                <TextBlock Foreground="{DynamicResource PlaceholderTextBrush}" FontSize="11">
+                                                                    <Run Text="等级: "/>
+                                                                    <Run Text="{Binding Creator.QualityLevel}"/>
+                                                                </TextBlock>
+                                                                <TextBlock Foreground="{DynamicResource PlaceholderTextBrush}" FontSize="11">
+                                                                    <Run Text="寄样数: "/>
+                                                                    <Run Text="{Binding Shipments.Count}"/>
+                                                                </TextBlock>
+                                                                <TextBlock Foreground="{DynamicResource PlaceholderTextBrush}" FontSize="11">
+                                                                    <Run Text="视频数: "/>
+                                                                    <Run Text="{Binding Videos.Count}"/>
+                                                                </TextBlock>
+                                                            </StackPanel>
                                                         </StackPanel>
-                                                    </StackPanel>
-                                                    
-                                                    <StackPanel Grid.Column="1" Orientation="Horizontal" 
-                                                                Spacing="5" VerticalAlignment="Center">
-                                                        <Button Content="确认" 
-                                                                Command="{Binding $parent[UserControl].DataContext.MarkAsAcknowledgedCommand}"
-                                                                CommandParameter="{Binding}"/>
-                                                        <Button Content="完成" 
-                                                                Command="{Binding $parent[UserControl].DataContext.MarkAsCompletedCommand}"
-                                                                CommandParameter="{Binding}"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-    </Grid>
+                                                        
+                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" 
+                                                                    Spacing="5" VerticalAlignment="Center">
+                                                            <Button Content="确认" 
+                                                                    Command="{Binding $parent[UserControl].DataContext.MarkAsAcknowledgedCommand}"
+                                                                    CommandParameter="{Binding}"/>
+                                                            <Button Content="完成" 
+                                                                    Command="{Binding $parent[UserControl].DataContext.MarkAsCompletedCommand}"
+                                                                    CommandParameter="{Binding}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            
+            <!-- 无数据提示 -->
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                        IsVisible="{Binding !TotalCount}">
+                <TextBlock Text="📋" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock Text="当前无需跟进的达人" HorizontalAlignment="Center" 
+                           FontSize="14" Foreground="{DynamicResource TertiaryTextBrush}"/>
+            </StackPanel>
+        </Panel>
+        </Grid>
+        
+        <!-- 加载遮罩 -->
+        <Border Background="#80000000" IsVisible="{Binding IsLoading}" ZIndex="99">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="4"/>
+                <TextBlock Text="加载中..." Margin="0,10,0,0" Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Panel>
 </UserControl>

@@ -33,6 +33,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasError;
 
+    [ObservableProperty]
+    private bool _isLoading;
+
     public SettingsViewModel(IOperationLogService operationLogService)
     {
         _operationLogService = operationLogService;
@@ -53,6 +56,7 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private async Task CleanOldLogsAsync()
     {
+        IsLoading = true;
         try
         {
             StatusMessage = "正在清理旧日志...";
@@ -66,6 +70,10 @@ public partial class SettingsViewModel : ObservableObject
         {
             StatusMessage = $"清理失败: {ex.Message}";
             HasError = true;
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 

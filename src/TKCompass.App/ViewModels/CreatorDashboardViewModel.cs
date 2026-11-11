@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using TKCompass.Domain.Models;
 using TKCompass.Domain.Services;
+using TKCompass.Services;
 
 namespace TKCompass.ViewModels;
 
@@ -17,6 +18,7 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
 {
     private readonly ICreatorService _creatorService;
     private readonly IMessenger _messenger;
+    private readonly INotificationService? _notificationService;
 
     [ObservableProperty]
     private ObservableCollection<Creator> _allCreators = new();
@@ -66,12 +68,33 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
     [ObservableProperty]
     private bool _isLoading;
 
-    public CreatorDashboardViewModel(ICreatorService creatorService, IMessenger messenger)
+    [ObservableProperty]
+    private ObservableCollection<Creator> _selectedCreators = new();
+
+    [ObservableProperty]
+    private bool _hasSelection;
+
+    public CreatorDashboardViewModel(ICreatorService creatorService, IMessenger messenger, INotificationService? notificationService = null)
     {
         _creatorService = creatorService;
         _messenger = messenger;
+        _notificationService = notificationService;
         _messenger.Register(this);
+
+        // Subscribe to SelectedCreators.CollectionChanged so HasSelection stays in sync
+        // when items are added/removed from the existing collection (e.g. by the code-behind).
+        SelectedCreators.CollectionChanged += (s, e) => HasSelection = SelectedCreators.Count > 0;
+
         _ = LoadDataAsync();
+    }
+
+    partial void OnSelectedCreatorsChanged(ObservableCollection<Creator> value)
+    {
+        if (value != null)
+        {
+            value.CollectionChanged += (s, e) => HasSelection = value.Count > 0;
+        }
+        HasSelection = value?.Count > 0;
     }
 
     private async Task LoadDataAsync()
@@ -100,7 +123,10 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"加载数据失败: {ex.Message}");
+            if (_notificationService != null)
+                await _notificationService.ShowErrorAsync("加载数据失败", ex.Message);
+            else
+                System.Diagnostics.Debug.WriteLine($"加载数据失败: {ex.Message}");
         }
         finally
         {
@@ -159,9 +185,28 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
             filtered = filtered.Where(c => c.LatestContactDate <= Filter.ContactDateTo.Value);
         }
 
+        // P1 任务 8：产品代码多选筛选
+        if (Filter.SelectedProductCodes != null && Filter.SelectedProductCodes.Count > 0)
+        {
+            filtered = filtered.Where(c => 
+                c.Shipments != null && 
+                c.Shipments.Any(s => 
+                    !string.IsNullOrEmpty(s.Sku) &&
+                    Filter.SelectedProductCodes.Any(code => 
+                        s.Sku.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim())
+                            .Contains(code, StringComparer.OrdinalIgnoreCase))));
+        }
+
+        // P1 任务 9：产品名搜索筛选
         if (!string.IsNullOrEmpty(Filter.ProductNameSearch))
         {
-            // TODO: 需要关联产品名搜索
+            var search = Filter.ProductNameSearch.Trim();
+            filtered = filtered.Where(c => 
+                c.Shipments != null && 
+                c.Shipments.Any(s => 
+                    !string.IsNullOrEmpty(s.ProductName) &&
+                    s.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)));
         }
 
         FilteredCreators = new ObservableCollection<Creator>(filtered);
@@ -173,7 +218,83 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
         Filter.Reset();
         FilteredCreators = new ObservableCollection<Creator>(AllCreators);
     }
+
+    [RelayCommand]
+    private async Task BatchDeleteAsync()
+    {
+        if (SelectedCreators == null || SelectedCreators.Count == 0)
+            return;
+
+        // 使用通知服务确认批量删除
+        if (_notificationService != null)
+        {
+            var confirmed = await _notificationService.ConfirmAsync(
+                "确认删除", 
+                $"确定要删除选中的 {SelectedCreators.Count} 个达人吗？此操作可以撤销。");
+            if (!confirmed)
+                return;
+        }
+
+        try
+        {
+            foreach (var creator in SelectedCreators.ToList())
+            {
+                await _creatorService.DeleteAsync(creator.Id);
+            }
+
+            SelectedCreators.Clear();
+            _messenger.Send(new CreatorUpdatedMessage());
+            
+            if (_notificationService != null)
+                await _notificationService.ShowInfoAsync("成功", "批量删除完成");
+        }
+        catch (Exception ex)
+        {
+            if (_notificationService != null)
+                await _notificationService.ShowErrorAsync("删除失败", ex.Message);
+        }
+    }
+
+    [RelayCommand]
+    private async Task BatchRestoreAsync()
+    {
+        if (SelectedCreators == null || SelectedCreators.Count == 0)
+            return;
+
+        try
+        {
+            foreach (var creator in SelectedCreators.ToList())
+            {
+                await _creatorService.RestoreAsync(creator.Id);
+            }
+
+            SelectedCreators.Clear();
+            _messenger.Send(new CreatorUpdatedMessage());
+            
+            if (_notificationService != null)
+                await _notificationService.ShowInfoAsync("成功", "批量恢复完成");
+        }
+        catch (Exception ex)
+        {
+            if (_notificationService != null)
+                await _notificationService.ShowErrorAsync("恢复失败", ex.Message);
+        }
+    }
+
+    [RelayCommand]
+    private void OpenCreatorDetail(Creator creator)
+    {
+        if (creator == null)
+            return;
+
+        _messenger.Send(new OpenCreatorDetailMessage(creator.Id));
+    }
 }
+
+/// <summary>
+/// 打开达人详情消息（用于导航到详情页）
+/// </summary>
+public record OpenCreatorDetailMessage(long CreatorId);
 
 /// <summary>
 /// 达人更新消息（用于 Messenger 通信）

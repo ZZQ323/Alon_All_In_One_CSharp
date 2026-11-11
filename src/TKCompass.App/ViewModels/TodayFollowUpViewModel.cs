@@ -45,6 +45,9 @@ public partial class TodayFollowUpViewModel : ObservableObject, IRecipient<Creat
     [ObservableProperty]
     private string _pageInfo = "";
 
+    [ObservableProperty]
+    private bool _isLoading;
+
     private const int PageSize = 50;
     private List<FollowUpItem> _allItems = new();
 
@@ -81,6 +84,7 @@ public partial class TodayFollowUpViewModel : ObservableObject, IRecipient<Creat
     {
         try
         {
+            IsLoading = true;
             // 获取所有达人
             var creators = await _creatorService.GetAllAsync();
             var creatorList = creators.ToList();
@@ -173,6 +177,10 @@ public partial class TodayFollowUpViewModel : ObservableObject, IRecipient<Creat
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"加载今日跟进数据失败: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
