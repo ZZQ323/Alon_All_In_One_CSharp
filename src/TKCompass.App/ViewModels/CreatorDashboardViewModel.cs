@@ -12,7 +12,7 @@ using TKCompass.Services;
 namespace TKCompass.ViewModels;
 
 /// <summary>
-/// 达人工作台 ViewModel（6 Tab）
+/// 达人工作台 ViewModel（3 Tab：今日提醒、正在交付、总表）
 /// </summary>
 public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<CreatorUpdatedMessage>
 {
@@ -27,19 +27,10 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
     private ObservableCollection<Creator> _filteredCreators = new();
 
     [ObservableProperty]
-    private ObservableCollection<Creator> _deliveredCreators = new();
+    private ObservableCollection<Creator> _todayReminderCreators = new();
 
     [ObservableProperty]
-    private ObservableCollection<Creator> _deletedCreators = new();
-
-    [ObservableProperty]
-    private ObservableCollection<Creator> _remindedCreators = new();
-
-    [ObservableProperty]
-    private ObservableCollection<Creator> _deliveringCreators = new();
-
-    [ObservableProperty]
-    private ObservableCollection<Creator> _todayFollowUpCreators = new();
+    private ObservableCollection<Creator> _inDeliveryCreators = new();
 
     [ObservableProperty]
     private FilterViewModel _filter = new();
@@ -105,21 +96,23 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
             var creators = await _creatorService.GetAllIncludeDeletedAsync();
             var list = creators.ToList();
 
+            // 总表：所有未删除的达人
             AllCreators = new ObservableCollection<Creator>(list.Where(c => !c.Deleted));
             FilteredCreators = new ObservableCollection<Creator>(AllCreators);
             
-            DeliveredCreators = new ObservableCollection<Creator>(list.Where(c => c.Delivered && !c.Deleted));
-            DeletedCreators = new ObservableCollection<Creator>(list.Where(c => c.Deleted));
-            RemindedCreators = new ObservableCollection<Creator>(list.Where(c => c.TodayStatus == Domain.Enums.TodayStatus.Reminded && !c.Deleted));
-            DeliveringCreators = new ObservableCollection<Creator>(list.Where(c => c.CooperationStatus == Domain.Enums.CooperationStatus.SampleSent && !c.Delivered && !c.Deleted));
-            TodayFollowUpCreators = new ObservableCollection<Creator>(list.Where(c => c.TodayStatus == Domain.Enums.TodayStatus.Pending && !c.Deleted));
+            // 今日提醒：今日状态为待跟进的未删除达人
+            TodayReminderCreators = new ObservableCollection<Creator>(list.Where(c => c.TodayStatus == Domain.Enums.TodayStatus.Pending && !c.Deleted));
+            
+            // 正在交付：已寄样但未交付的未删除达人
+            InDeliveryCreators = new ObservableCollection<Creator>(list.Where(c => c.CooperationStatus == Domain.Enums.CooperationStatus.SampleSent && !c.Delivered && !c.Deleted));
 
+            // 更新统计数字（顶部统计栏仍需要这些计数）
             TotalCount = AllCreators.Count;
-            DeliveredCount = DeliveredCreators.Count;
-            DeletedCount = DeletedCreators.Count;
-            RemindedCount = RemindedCreators.Count;
-            DeliveringCount = DeliveringCreators.Count;
-            TodayFollowUpCount = TodayFollowUpCreators.Count;
+            DeliveredCount = list.Count(c => c.Delivered && !c.Deleted);
+            DeletedCount = list.Count(c => c.Deleted);
+            RemindedCount = list.Count(c => c.TodayStatus == Domain.Enums.TodayStatus.Reminded && !c.Deleted);
+            DeliveringCount = InDeliveryCreators.Count;
+            TodayFollowUpCount = TodayReminderCreators.Count;
         }
         catch (Exception ex)
         {

@@ -61,9 +61,10 @@ public class CreatorRepository : BaseRepository<Creator>, ICreatorRepository
 
     public async Task<IEnumerable<CreatorDashboardDto>> GetDashboardDataAsync()
     {
-        // TODO: 实现复杂的 Dashboard 查询（包含统计信息）
-        // 这个查询需要 JOIN 多个表并计算统计数据
-        return new List<CreatorDashboardDto>();
+        // 从 v_creator_dashboard 视图直接读取数据
+        return await _context.CreatorDashboards
+            .OrderByDescending(d => d.TotalGmv)
+            .ToListAsync();
     }
 
     public async Task UpdateStatusAsync(long id, CooperationStatus status)

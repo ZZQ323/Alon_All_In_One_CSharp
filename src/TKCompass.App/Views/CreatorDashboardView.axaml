@@ -44,11 +44,57 @@
 
             <!-- TabControl -->
             <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" Margin="15">
-                <TabItem Header="总表">
+                <TabItem Header="今日提醒">
                     <DataGrid x:Name="MainDataGrid"
-                              ItemsSource="{Binding FilteredCreators}"
+                              ItemsSource="{Binding TodayReminderCreators}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
+                              CanUserSortColumns="True"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0"
+                              SelectionMode="Extended"
+                              SelectionChanged="DataGrid_SelectionChanged"
+                              DoubleTapped="DataGrid_DoubleTapped">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
+                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
+                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
+                            <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
+                            <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <TabItem Header="正在交付">
+                    <DataGrid ItemsSource="{Binding InDeliveryCreators}" 
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserSortColumns="True"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="0"
+                              SelectionMode="Extended"
+                              SelectionChanged="DataGrid_SelectionChanged"
+                              DoubleTapped="DataGrid_DoubleTapped">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
+                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
+                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
+                            <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <TabItem Header="总表">
+                    <DataGrid ItemsSource="{Binding FilteredCreators}" 
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserSortColumns="True"
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal"
@@ -62,86 +108,6 @@
                             <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
                             <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
                             <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
-
-                <TabItem Header="已交付">
-                    <DataGrid ItemsSource="{Binding DeliveredCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="交付原因" Binding="{Binding DeliveredReason}" Width="*"/>
-                            <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
-
-                <TabItem Header="已删除">
-                    <DataGrid ItemsSource="{Binding DeletedCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="删除原因" Binding="{Binding DeliveredReason}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
-
-                <TabItem Header="已提醒">
-                    <DataGrid ItemsSource="{Binding RemindedCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
-                            <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
-
-                <TabItem Header="正在交付">
-                    <DataGrid ItemsSource="{Binding DeliveringCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
-
-                <TabItem Header="今日提醒">
-                    <DataGrid ItemsSource="{Binding TodayFollowUpCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
                             <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
                             <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
                         </DataGrid.Columns>

@@ -49,6 +49,24 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private TodayFollowUpViewModel _todayFollowUp;
 
     [ObservableProperty]
+    private TodayReminderViewModel _todayReminder;
+
+    [ObservableProperty]
+    private InDeliveryViewModel _inDelivery;
+
+    [ObservableProperty]
+    private AllCreatorsViewModel _allCreators;
+
+    [ObservableProperty]
+    private DeliveredViewModel _delivered;
+
+    [ObservableProperty]
+    private DeletedViewModel _deleted;
+
+    [ObservableProperty]
+    private string _selectedNavigation = "";
+
+    [ObservableProperty]
     private object _currentView;
 
     public MainViewModel(
@@ -95,6 +113,11 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
         _todayFollowUp = new TodayFollowUpViewModel(
             creatorService, shipmentService, videoService, 
             relationshipService, contactService, productCodeService, dictionaryService, messenger);
+        _todayReminder = new TodayReminderViewModel();
+        _inDelivery = new InDeliveryViewModel();
+        _allCreators = new AllCreatorsViewModel();
+        _delivered = new DeliveredViewModel();
+        _deleted = new DeletedViewModel();
         _currentView = _dashboard;
     }
 
@@ -149,10 +172,43 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     }
 
     [RelayCommand]
-    private void NavigateToTodayFollowUp()
+    private void NavigateToTodayReminder()
     {
-        CurrentView = TodayFollowUp;
-        SetStatus("已切换到 今日跟进 页面");
+        CurrentView = TodayReminder;
+        SelectedNavigation = "TodayReminder";
+        SetStatus("已切换到 今日提醒 页面");
+    }
+
+    [RelayCommand]
+    private void NavigateToInDelivery()
+    {
+        CurrentView = InDelivery;
+        SelectedNavigation = "InDelivery";
+        SetStatus("已切换到 正在交付 页面");
+    }
+
+    [RelayCommand]
+    private void NavigateToAllCreators()
+    {
+        CurrentView = AllCreators;
+        SelectedNavigation = "AllCreators";
+        SetStatus("已切换到 总表 页面");
+    }
+
+    [RelayCommand]
+    private void NavigateToDelivered()
+    {
+        CurrentView = Delivered;
+        SelectedNavigation = "Delivered";
+        SetStatus("已切换到 已交付 页面");
+    }
+
+    [RelayCommand]
+    private void NavigateToDeleted()
+    {
+        CurrentView = Deleted;
+        SelectedNavigation = "Deleted";
+        SetStatus("已切换到 已删除 页面");
     }
 
     [RelayCommand]

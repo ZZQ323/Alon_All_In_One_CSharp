@@ -18,6 +18,9 @@ public class TKCompassDbContext : DbContext
     public DbSet<CreatorTag> CreatorTags { get; set; }
     public DbSet<Relationship> Relationships { get; set; }
     public DbSet<BatchRemindLog> BatchRemindLogs { get; set; }
+    public DbSet<CreatorDashboardDto> CreatorDashboards { get; set; } = null!;
+    public DbSet<TodayFollowUpDto> TodayFollowUps { get; set; } = null!;
+    public DbSet<CreatorFulfillmentDto> CreatorFulfillments { get; set; } = null!;
 
     public TKCompassDbContext(DbContextOptions<TKCompassDbContext> options) : base(options)
     {

@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<ICreatorTagRepository, CreatorTagRepository>();
         services.AddScoped<IRelationshipRepository, RelationshipRepository>();
         services.AddScoped<IBatchRemindLogRepository, BatchRemindLogRepository>();
+        services.AddScoped<IFulfillmentRepository, FulfillmentRepository>();
 
         // 注册 Services
         services.AddScoped<ICreatorService, CreatorService>();
@@ -45,6 +46,10 @@ public static class DependencyInjection
         services.AddScoped<IRelationshipService, RelationshipService>();
         services.AddScoped<IUndoService, UndoService>();
         services.AddScoped<ExcelImportService>();
+        services.AddScoped<IFollowUpService, FollowUpService>();
+        services.AddScoped<IBackupService, BackupService>();
+        services.AddScoped<IFulfillmentService, FulfillmentService>();
+        services.AddScoped<ITodayTaskService, TodayTaskService>();
 
         return services;
     }

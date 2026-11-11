@@ -34,17 +34,73 @@
                                FontWeight="Bold" 
                                Margin="20,0,20,20"/>
                     
-                    <Button Content="达人工作台" 
-                            Command="{Binding NavigateToDashboardCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
-                    
-                    <Button Content="今日跟进" 
-                            Command="{Binding NavigateToTodayFollowUpCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
+                    <Expander Header="达人工作台" 
+                              HorizontalAlignment="Stretch" 
+                              HorizontalContentAlignment="Left" 
+                              Margin="10,5">
+                        <StackPanel>
+                            <Button Content="今日提醒" 
+                                    Command="{Binding NavigateToTodayReminderCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Margin="20,2,0,2">
+                                <Button.Styles>
+                                    <Style Selector="Button.selected">
+                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                            <Button Content="正在交付" 
+                                    Command="{Binding NavigateToInDeliveryCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Margin="20,2,0,2">
+                                <Button.Styles>
+                                    <Style Selector="Button.selected">
+                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                            <Button Content="总表" 
+                                    Command="{Binding NavigateToAllCreatorsCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Margin="20,2,0,2">
+                                <Button.Styles>
+                                    <Style Selector="Button.selected">
+                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                            <Button Content="已交付" 
+                                    Command="{Binding NavigateToDeliveredCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Margin="20,2,0,2">
+                                <Button.Styles>
+                                    <Style Selector="Button.selected">
+                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                            <Button Content="已删除" 
+                                    Command="{Binding NavigateToDeletedCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Margin="20,2,0,2">
+                                <Button.Styles>
+                                    <Style Selector="Button.selected">
+                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
+                        </StackPanel>
+                    </Expander>
                     
                     <Button Content="CRM 管理" 
                             Command="{Binding NavigateToCrmCommand}"

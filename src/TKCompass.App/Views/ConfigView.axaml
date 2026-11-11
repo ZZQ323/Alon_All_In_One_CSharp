@@ -35,11 +35,15 @@
             <TabItem Header="达人类型">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
-                    <DataGrid Grid.Row="0" 
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,0,0,10">
+                        <Button Content="新增达人类型" Command="{Binding AddCreatorTypeCommand}" Classes="accent" Padding="15,8"/>
+                        <Button Content="编辑选中" Command="{Binding EditCreatorTypeCommand}" Padding="15,8"/>
+                        <Button Content="删除选中" Command="{Binding DeleteCreatorTypeCommand}" Padding="15,8"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" Name="CreatorTypeDataGrid"
                               ItemsSource="{Binding CreatorTypes}"
                               SelectedItem="{Binding SelectedCreatorType}"
                               AutoGenerateColumns="False"
@@ -47,6 +51,11 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
+                            </Style>
+                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="200"/>
@@ -54,15 +63,6 @@
                             <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="180"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
-                        <TextBox Text="{Binding NewCreatorTypeName}" Watermark="类型名称" Height="35"/>
-                        <TextBox Text="{Binding NewCreatorTypeDescription}" Watermark="类型描述" Height="35"/>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Content="添加达人类型" Command="{Binding AddCreatorTypeCommand}" Height="35" Classes="accent"/>
-                            <Button Content="删除选中" Command="{Binding DeleteCreatorTypeCommand}" Height="35"/>
-                        </StackPanel>
-                    </StackPanel>
                 </Grid>
             </TabItem>
 
@@ -70,11 +70,15 @@
             <TabItem Header="产品代码">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
-                    <DataGrid Grid.Row="0" 
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,0,0,10">
+                        <Button Content="新增产品代码" Command="{Binding AddProductCodeCommand}" Classes="accent" Padding="15,8"/>
+                        <Button Content="编辑选中" Command="{Binding EditProductCodeCommand}" Padding="15,8"/>
+                        <Button Content="删除选中" Command="{Binding DeleteProductCodeCommand}" Padding="15,8"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" Name="ProductCodeDataGrid"
                               ItemsSource="{Binding ProductCodes}"
                               SelectedItem="{Binding SelectedProductCode}"
                               AutoGenerateColumns="False"
@@ -82,6 +86,11 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
+                            </Style>
+                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="150"/>
@@ -90,16 +99,6 @@
                             <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="180"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
-                        <TextBox Text="{Binding NewProductCode}" Watermark="产品代码" Height="35"/>
-                        <TextBox Text="{Binding NewProductName}" Watermark="产品名称" Height="35"/>
-                        <TextBox Text="{Binding NewProductDescription}" Watermark="产品描述" Height="35"/>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Content="添加产品代码" Command="{Binding AddProductCodeCommand}" Height="35" Classes="accent"/>
-                            <Button Content="删除选中" Command="{Binding DeleteProductCodeCommand}" Height="35"/>
-                        </StackPanel>
-                    </StackPanel>
                 </Grid>
             </TabItem>
 
@@ -107,11 +106,15 @@
             <TabItem Header="质量等级">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
-                    <DataGrid Grid.Row="0" 
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,0,0,10">
+                        <Button Content="新增质量等级" Command="{Binding AddQualityLevelCommand}" Classes="accent" Padding="15,8"/>
+                        <Button Content="编辑选中" Command="{Binding EditQualityLevelCommand}" Padding="15,8"/>
+                        <Button Content="删除选中" Command="{Binding DeleteQualityLevelCommand}" Padding="15,8"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" Name="QualityLevelDataGrid"
                               ItemsSource="{Binding QualityLevels}"
                               SelectedItem="{Binding SelectedQualityLevel}"
                               AutoGenerateColumns="False"
@@ -119,6 +122,11 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
+                            </Style>
+                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="100"/>
@@ -127,16 +135,6 @@
                             <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
-                        <TextBox Text="{Binding NewQualityCode}" Watermark="等级代码（如 S、A、B）" Height="35"/>
-                        <TextBox Text="{Binding NewQualityLabel}" Watermark="等级标签（如 S级、A级）" Height="35"/>
-                        <TextBox Text="{Binding NewQualitySort}" Watermark="排序（数字）" Height="35"/>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Content="添加质量等级" Command="{Binding AddQualityLevelCommand}" Height="35" Classes="accent"/>
-                            <Button Content="删除选中" Command="{Binding DeleteQualityLevelCommand}" Height="35"/>
-                        </StackPanel>
-                    </StackPanel>
                 </Grid>
             </TabItem>
 
@@ -144,11 +142,15 @@
             <TabItem Header="联系方式渠道">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
-                    <DataGrid Grid.Row="0" 
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,0,0,10">
+                        <Button Content="新增联系方式渠道" Command="{Binding AddContactChannelCommand}" Classes="accent" Padding="15,8"/>
+                        <Button Content="编辑选中" Command="{Binding EditContactChannelCommand}" Padding="15,8"/>
+                        <Button Content="删除选中" Command="{Binding DeleteContactChannelCommand}" Padding="15,8"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="1" Name="ContactChannelDataGrid"
                               ItemsSource="{Binding ContactChannels}"
                               SelectedItem="{Binding SelectedContactChannel}"
                               AutoGenerateColumns="False"
@@ -156,6 +158,11 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
+                            </Style>
+                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="150"/>
@@ -164,16 +171,6 @@
                             <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Spacing="10">
-                        <TextBox Text="{Binding NewChannelCode}" Watermark="渠道代码（如 whatsapp、email）" Height="35"/>
-                        <TextBox Text="{Binding NewChannelLabel}" Watermark="渠道标签（如 WhatsApp、邮箱）" Height="35"/>
-                        <TextBox Text="{Binding NewChannelSort}" Watermark="排序（数字）" Height="35"/>
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button Content="添加联系方式渠道" Command="{Binding AddContactChannelCommand}" Height="35" Classes="accent"/>
-                            <Button Content="删除选中" Command="{Binding DeleteContactChannelCommand}" Height="35"/>
-                        </StackPanel>
-                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>
