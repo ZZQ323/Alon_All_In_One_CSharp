@@ -9,7 +9,7 @@ using TKCompass.Services;
 
 namespace TKCompass.ViewModels;
 
-public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDetailMessage>
+public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDetailMessage>, IRecipient<OpenCreateCreatorDialogMessage>
 {
     private readonly ICreatorService _creatorService;
     private readonly ICreatorTypeService _creatorTypeService;
@@ -23,6 +23,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private readonly ExcelImportService _excelImportService;
     private readonly IMessenger _messenger;
     private readonly INotificationService? _notificationService;
+    private readonly IBackupService _backupService;
 
     [ObservableProperty]
     private string _statusBarMessage = "就绪";
@@ -46,9 +47,6 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private CrmViewModel _crm;
 
     [ObservableProperty]
-    private TodayFollowUpViewModel _todayFollowUp;
-
-    [ObservableProperty]
     private TodayReminderViewModel _todayReminder;
 
     [ObservableProperty]
@@ -64,7 +62,13 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private DeletedViewModel _deleted;
 
     [ObservableProperty]
-    private string _selectedNavigation = "";
+    private RemindedViewModel _reminded;
+
+    [ObservableProperty]
+    private string _selectedNavigation = "Dashboard";
+
+    [ObservableProperty]
+    private bool _isDashboardExpanded;
 
     [ObservableProperty]
     private object _currentView;
@@ -82,6 +86,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
         ExcelImportService excelImportService,
         IUndoService undoService,
         IMessenger messenger,
+        IBackupService backupService,
         INotificationService? notificationService = null)
     {
         _creatorService = creatorService;
@@ -96,10 +101,11 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
         _excelImportService = excelImportService;
         _messenger = messenger;
         _notificationService = notificationService;
+        _backupService = backupService;
 
         _dashboard = new CreatorDashboardViewModel(creatorService, messenger);
         _config = new ConfigViewModel(creatorTypeService, productCodeService, dictionaryService, messenger);
-        _settings = new SettingsViewModel(operationLogService);
+        _settings = new SettingsViewModel(operationLogService, backupService);
         _operationHistory = new OperationHistoryViewModel(operationLogService, undoService, messenger);
         _excelImport = new ExcelImportViewModel(
             excelImportService, 
@@ -110,14 +116,12 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
             operationLogService,
             messenger);
         _crm = new CrmViewModel(creatorService, messenger);
-        _todayFollowUp = new TodayFollowUpViewModel(
-            creatorService, shipmentService, videoService, 
-            relationshipService, contactService, productCodeService, dictionaryService, messenger);
         _todayReminder = new TodayReminderViewModel();
         _inDelivery = new InDeliveryViewModel();
-        _allCreators = new AllCreatorsViewModel();
+        _allCreators = new AllCreatorsViewModel(creatorService, messenger);
         _delivered = new DeliveredViewModel();
         _deleted = new DeletedViewModel();
+        _reminded = new RemindedViewModel();
         _currentView = _dashboard;
     }
 
@@ -133,6 +137,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private void NavigateToDashboard()
     {
         CurrentView = Dashboard;
+        SelectedNavigation = "Dashboard";
         SetStatus("已切换到 达人工作台 页面");
     }
 
@@ -140,6 +145,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private void NavigateToConfig()
     {
         CurrentView = Config;
+        SelectedNavigation = "Config";
         SetStatus("已切换到 配置管理 页面");
     }
 
@@ -147,6 +153,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private void NavigateToSettings()
     {
         CurrentView = Settings;
+        SelectedNavigation = "Settings";
         SetStatus("已切换到 设置 页面");
     }
 
@@ -154,6 +161,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private void NavigateToOperationHistory()
     {
         CurrentView = OperationHistory;
+        SelectedNavigation = "OperationHistory";
         SetStatus("已切换到 操作历史 页面");
     }
 
@@ -161,6 +169,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private void NavigateToExcelImport()
     {
         CurrentView = ExcelImport;
+        SelectedNavigation = "ExcelImport";
         SetStatus("已切换到 Excel 导入 页面");
     }
 
@@ -168,6 +177,7 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     private void NavigateToCrm()
     {
         CurrentView = Crm;
+        SelectedNavigation = "Crm";
         SetStatus("已切换到 CRM 管理 页面");
     }
 
@@ -212,6 +222,14 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     }
 
     [RelayCommand]
+    private void NavigateToReminded()
+    {
+        CurrentView = Reminded;
+        SelectedNavigation = "Reminded";
+        SetStatus("已切换到 已提醒 页面");
+    }
+
+    [RelayCommand]
     private void Refresh()
     {
         // 触发当前视图刷新 - 通过重新赋值 CurrentView 来触发 UI 刷新
@@ -227,5 +245,19 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
         await detailVm.LoadCreatorAsync(message.CreatorId);
         CurrentView = detailVm;
         SetStatus("已打开达人详情");
+    }
+
+    public void Receive(OpenCreateCreatorDialogMessage message)
+    {
+        // 打开新建达人弹窗
+        var dialog = new Views.CreateCreatorDialog();
+        var viewModel = new CreateCreatorDialogViewModel(_creatorService, _messenger);
+        dialog.DataContext = viewModel;
+        
+        // 获取主窗口并显示对话框
+        if (Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime lifetime)
+        {
+            dialog.ShowDialog(lifetime.MainWindow);
+        }
     }
 }

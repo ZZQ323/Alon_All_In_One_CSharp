@@ -2,10 +2,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:TKCompass.ViewModels"
         xmlns:views="using:TKCompass.Views"
+        xmlns:conv="using:TKCompass.AppBase.Converters"
         x:Class="TKCompass.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="TKCompass - 达人管理系统"
         Width="1200" Height="800">
+    
+    <Window.Styles>
+        <Style Selector="Button.navitem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Button.navitem:pointerover">
+            <Setter Property="Background" Value="#F5F5F5"/>
+        </Style>
+        <Style Selector="Button.navsub">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="24,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Button.navsub:pointerover">
+            <Setter Property="Background" Value="#F5F5F5"/>
+        </Style>
+    </Window.Styles>
     
     <Window.KeyBindings>
         <KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
@@ -34,103 +58,79 @@
                                FontWeight="Bold" 
                                Margin="20,0,20,20"/>
                     
-                    <Expander Header="达人工作台" 
+                    <Expander IsExpanded="{Binding IsDashboardExpanded}"
                               HorizontalAlignment="Stretch" 
-                              HorizontalContentAlignment="Left" 
                               Margin="10,5">
+                        <Expander.Header>
+                            <Button Content="达人工作台" 
+                                    Command="{Binding NavigateToDashboardCommand}"
+                                    Classes="navitem"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.DashboardBorderInstance}}"/>
+                        </Expander.Header>
                         <StackPanel>
-                            <Button Content="今日提醒" 
+                            <Button Content="今日提醒" Classes="navsub"
                                     Command="{Binding NavigateToTodayReminderCommand}"
                                     HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Left"
-                                    Margin="20,2,0,2">
-                                <Button.Styles>
-                                    <Style Selector="Button.selected">
-                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
-                            <Button Content="正在交付" 
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.TodayReminderBorderInstance}}"/>
+                            <Button Content="正在交付" Classes="navsub"
                                     Command="{Binding NavigateToInDeliveryCommand}"
                                     HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Left"
-                                    Margin="20,2,0,2">
-                                <Button.Styles>
-                                    <Style Selector="Button.selected">
-                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
-                            <Button Content="总表" 
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.InDeliveryBorderInstance}}"/>
+                            <Button Content="总表" Classes="navsub"
                                     Command="{Binding NavigateToAllCreatorsCommand}"
                                     HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Left"
-                                    Margin="20,2,0,2">
-                                <Button.Styles>
-                                    <Style Selector="Button.selected">
-                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
-                            <Button Content="已交付" 
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.AllCreatorsBorderInstance}}"/>
+                            <Button Content="已提醒" Classes="navsub"
+                                    Command="{Binding NavigateToRemindedCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.RemindedBorderInstance}}"/>
+                            <Button Content="已交付" Classes="navsub"
                                     Command="{Binding NavigateToDeliveredCommand}"
                                     HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Left"
-                                    Margin="20,2,0,2">
-                                <Button.Styles>
-                                    <Style Selector="Button.selected">
-                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
-                            <Button Content="已删除" 
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.DeliveredBorderInstance}}"/>
+                            <Button Content="已删除" Classes="navsub"
                                     Command="{Binding NavigateToDeletedCommand}"
                                     HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Left"
-                                    Margin="20,2,0,2">
-                                <Button.Styles>
-                                    <Style Selector="Button.selected">
-                                        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
+                                    BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.DeletedBorderInstance}}"/>
                         </StackPanel>
                     </Expander>
                     
                     <Button Content="CRM 管理" 
+                            Classes="navitem"
                             Command="{Binding NavigateToCrmCommand}"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
+                            Margin="10,5"
+                            BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.CrmBorderInstance}}"/>
                     
                     <Button Content="Excel 导入" 
+                            Classes="navitem"
                             Command="{Binding NavigateToExcelImportCommand}"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
+                            Margin="10,5"
+                            BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.ExcelImportBorderInstance}}"/>
                     
                     <Button Content="配置管理" 
+                            Classes="navitem"
                             Command="{Binding NavigateToConfigCommand}"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
+                            Margin="10,5"
+                            BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.ConfigBorderInstance}}"/>
                     
                     <Button Content="操作历史" 
+                            Classes="navitem"
                             Command="{Binding NavigateToOperationHistoryCommand}"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
+                            Margin="10,5"
+                            BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.OperationHistoryBorderInstance}}"/>
                     
                     <Button Content="设置" 
+                            Classes="navitem"
                             Command="{Binding NavigateToSettingsCommand}"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            Margin="10,5"/>
+                            Margin="10,5"
+                            BorderBrush="{Binding SelectedNavigation, Converter={x:Static conv:StringEqualsToBrushConverter.SettingsBorderInstance}}"/>
                 </StackPanel>
             </Border>
             

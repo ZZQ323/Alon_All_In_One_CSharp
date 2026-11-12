@@ -50,6 +50,42 @@
                             <Button Grid.Column="1" Content="浏览..." Command="{Binding BrowseBackupPathCommand}" Margin="10,0,0,0"/>
                         </Grid>
                     </StackPanel>
+                    
+                    <!-- 手动备份按钮 -->
+                    <Button Content="立即备份" Command="{Binding CreateManualBackupCommand}" 
+                            HorizontalAlignment="Left" Padding="15,8"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- 备份历史 -->
+            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="4" Padding="15">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0" Text="备份历史" FontSize="16" FontWeight="SemiBold"/>
+                        <Button Grid.Column="1" Content="刷新" Command="{Binding RefreshBackupListCommand}" Padding="10,5"/>
+                    </Grid>
+                    
+                    <ListBox ItemsSource="{Binding BackupHistory}" 
+                             SelectedItem="{Binding SelectedBackup}"
+                             Height="200"
+                             SelectionMode="Single">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*,Auto,Auto" Margin="5">
+                                    <TextBlock Grid.Column="0" Text="{Binding FileName}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding FileSize, StringFormat='{}{0:N0} bytes'}" 
+                                               Margin="10,0" VerticalAlignment="Center" Foreground="Gray"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding CreatedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" 
+                                               VerticalAlignment="Center" Foreground="Gray"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="恢复选中" Command="{Binding RestoreBackupCommand}" Padding="15,8"/>
+                        <Button Content="删除选中" Command="{Binding DeleteBackupCommand}" Padding="15,8"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
             

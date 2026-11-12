@@ -12,15 +12,20 @@ public class ViewLocator : IDataTemplate
         if (data is null) return null;
         
         var fullName = data.GetType().FullName!;
-        // 将 ViewModels 命名空间替换为 Views 命名空间，并将 ViewModel 后缀替换为 View
         var name = fullName
             .Replace(".ViewModels.", ".Views.", System.StringComparison.Ordinal)
             .Replace("ViewModel", "View", System.StringComparison.Ordinal);
-        var type = System.Type.GetType(name);
+        
+        // 使用 data 所在程序集解析类型
+        var assembly = data.GetType().Assembly;
+        var type = assembly.GetType(name);
         
         if (type != null)
         {
-            return (Control)Activator.CreateInstance(type)!;
+            var view = (Control)Activator.CreateInstance(type)!;
+            // 显式设置 DataContext，确保 View 能正确绑定到 ViewModel
+            view.DataContext = data;
+            return view;
         }
         
         return new TextBlock { Text = "Not Found: " + name };

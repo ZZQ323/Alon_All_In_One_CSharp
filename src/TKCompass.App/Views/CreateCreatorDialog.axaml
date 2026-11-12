@@ -1,0 +1,29 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TKCompass.ViewModels"
+        x:Class="TKCompass.Views.CreateCreatorDialog"
+        x:DataType="vm:CreateCreatorDialogViewModel"
+        Title="新建达人" Width="450" Height="400"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+
+    <Design.DataContext>
+        <vm:CreateCreatorDialogViewModel />
+    </Design.DataContext>
+
+    <StackPanel Margin="20" Spacing="12">
+        <TextBox Text="{Binding Nickname}" Watermark="昵称 *" Height="35"/>
+        <TextBox Text="{Binding Handle}" Watermark="平台账号（TikTok @xxx）*" Height="35"/>
+        <TextBox Text="{Binding ContactInfo}" Watermark="联系方式 *" Height="35"/>
+        <TextBox Text="{Binding QualityLevel}" Watermark="等级（S/A/B/C/D）" Height="35"/>
+        <TextBox Text="{Binding Notes}" Watermark="备注" Height="35" AcceptsReturn="True"/>
+
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="#F44336" FontSize="12"
+                   IsVisible="{Binding HasError}" Margin="0,5,0,0"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+            <Button Content="取消" Name="CancelButton" Height="35" Padding="20,0"/>
+            <Button Content="确定" Name="OkButton" Classes="accent" Height="35" Padding="20,0"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

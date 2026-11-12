@@ -51,11 +51,6 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
-                        <DataGrid.Styles>
-                            <Style Selector="DataGridRow">
-                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
-                            </Style>
-                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="200"/>
@@ -86,11 +81,6 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
-                        <DataGrid.Styles>
-                            <Style Selector="DataGridRow">
-                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
-                            </Style>
-                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="150"/>
@@ -122,11 +112,6 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
-                        <DataGrid.Styles>
-                            <Style Selector="DataGridRow">
-                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
-                            </Style>
-                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="100"/>
@@ -158,11 +143,6 @@
                               CanUserReorderColumns="True"
                               CanUserResizeColumns="True"
                               GridLinesVisibility="Horizontal">
-                        <DataGrid.Styles>
-                            <Style Selector="DataGridRow">
-                                <Setter Property="IsDoubleTapEnabled" Value="True"/>
-                            </Style>
-                        </DataGrid.Styles>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="80"/>
                             <DataGridTextColumn Header="代码" Binding="{Binding Code}" Width="150"/>

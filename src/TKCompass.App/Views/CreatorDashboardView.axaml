@@ -6,9 +6,13 @@
              x:Class="TKCompass.Views.CreatorDashboardView"
              x:DataType="vm:CreatorDashboardViewModel">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <!-- 页面标题 -->
+        <TextBlock Grid.Row="0" Text="达人工作台" 
+                   FontSize="24" FontWeight="Bold" Margin="20,16,20,8"/>
+        
         <!-- 顶部统计栏 -->
-        <Border Grid.Row="0" Background="{DynamicResource SurfaceBrush}" Padding="15">
+        <Border Grid.Row="1" Background="{DynamicResource SurfaceBrush}" Padding="15">
             <StackPanel Orientation="Horizontal" Spacing="30">
                 <StackPanel>
                     <TextBlock Text="总达人" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}"/>
@@ -38,115 +42,139 @@
         </Border>
 
         <!-- 主内容区：筛选栏 + TabControl -->
-        <Grid Grid.Row="1" RowDefinitions="Auto,*">
-            <!-- 筛选栏 -->
-            <views:FilterBar Grid.Row="0" DataContext="{Binding Filter}" Margin="15,15,15,0"/>
+        <Grid Grid.Row="2" RowDefinitions="Auto,*">
+            <!-- 筛选栏 + 新建按钮 -->
+            <DockPanel Grid.Row="0" Margin="15,15,15,0">
+                <Button DockPanel.Dock="Right" Content="新建达人" Click="CreateCreatorButton_Click"
+                        Classes="accent" Padding="15,5" Height="32" VerticalAlignment="Top"/>
+                <views:FilterBar DataContext="{Binding Filter}"/>
+            </DockPanel>
 
             <!-- TabControl -->
             <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" Margin="15">
+                <!-- Tab1: 今日提醒 -->
                 <TabItem Header="今日提醒">
-                    <DataGrid x:Name="MainDataGrid"
-                              ItemsSource="{Binding TodayReminderCreators}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              CanUserSortColumns="True"
-                              CanUserReorderColumns="True"
-                              CanUserResizeColumns="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0"
-                              SelectionMode="Extended"
-                              SelectionChanged="DataGrid_SelectionChanged"
-                              DoubleTapped="DataGrid_DoubleTapped">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
-                            <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid RowDefinitions="Auto,*">
+                        <!-- Tab1 工具栏 -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+                            <TextBlock Text="今日待跟进达人列表" VerticalAlignment="Center"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        </StackPanel>
+                        <!-- Tab1 数据表格 -->
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding TodayReminderCreators}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserSortColumns="True"
+                                  CanUserReorderColumns="True"
+                                  CanUserResizeColumns="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="0"
+                                  SelectionMode="Extended"
+                                  SelectionChanged="DataGrid_SelectionChanged"
+                                  DoubleTapped="DataGrid_DoubleTapped">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
+                                <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
+                                <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
+                                <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
+                                <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+                                <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
+                                <DataGridTemplateColumn Header="操作" Width="280">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="5" Margin="2">
+                                                <Button Content="推进状态"
+                                                        Command="{Binding $parent[DataGrid].DataContext.AdvanceStatusCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Padding="8,3" FontSize="11"
+                                                        Background="#2196F3" Foreground="White"/>
+                                                <Button Content="标记已提醒"
+                                                        Command="{Binding $parent[DataGrid].DataContext.MarkRemindedCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Padding="8,3" FontSize="11"
+                                                        Background="#4CAF50" Foreground="White"/>
+                                                <Button Content="暂不合作"
+                                                        Command="{Binding $parent[DataGrid].DataContext.MarkNotCooperatingCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Padding="8,3" FontSize="11"
+                                                        Background="#FF9800" Foreground="White"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </TabItem>
 
+                <!-- Tab2: 正在交付 -->
                 <TabItem Header="正在交付">
-                    <DataGrid ItemsSource="{Binding InDeliveryCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              CanUserSortColumns="True"
-                              CanUserReorderColumns="True"
-                              CanUserResizeColumns="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0"
-                              SelectionMode="Extended"
-                              SelectionChanged="DataGrid_SelectionChanged"
-                              DoubleTapped="DataGrid_DoubleTapped">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid RowDefinitions="Auto,*">
+                        <!-- Tab2 工具栏 -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+                            <TextBlock Text="正在交付中的达人（同意合作 / 寄样中）" VerticalAlignment="Center"
+                                       FontSize="14" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <Button Content="批量提醒"
+                                    Command="{Binding BatchRemindCommand}"
+                                    Padding="12,5"
+                                    Background="#2196F3" Foreground="White">
+                                <Button.IsEnabled>
+                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                        <Binding Path="HasDeliverySelection"/>
+                                        <Binding Path="!IsLoading"/>
+                                    </MultiBinding>
+                                </Button.IsEnabled>
+                            </Button>
+                            <TextBlock Text="{Binding SelectedDeliveryCreators.Count, StringFormat='已选 {0} 人'}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <!-- Tab2 数据表格 -->
+                        <DataGrid Grid.Row="1"
+                                  x:Name="DeliveryDataGrid"
+                                  ItemsSource="{Binding InDeliveryCreators}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserSortColumns="True"
+                                  CanUserReorderColumns="True"
+                                  CanUserResizeColumns="True"
+                                  GridLinesVisibility="Horizontal"
+                                  BorderThickness="0"
+                                  SelectionMode="Extended"
+                                  SelectionChanged="DeliveryDataGrid_SelectionChanged"
+                                  DoubleTapped="DataGrid_DoubleTapped">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
+                                <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
+                                <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
+                                <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
+                                <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+                                <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </TabItem>
 
-                <TabItem Header="总表">
-                    <DataGrid ItemsSource="{Binding FilteredCreators}" 
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              CanUserSortColumns="True"
-                              CanUserReorderColumns="True"
-                              CanUserResizeColumns="True"
-                              GridLinesVisibility="Horizontal"
-                              BorderThickness="0"
-                              SelectionMode="Extended"
-                              SelectionChanged="DataGrid_SelectionChanged"
-                              DoubleTapped="DataGrid_DoubleTapped">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
-                            <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
-                            <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="60"/>
-                            <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="100"/>
-                            <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="最近联系" Binding="{Binding LatestContactDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
-                            <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </TabItem>
+
             </TabControl>
         </Grid>
 
         <!-- 底部状态栏 -->
-        <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" Padding="10">
+        <Border Grid.Row="3" Background="{DynamicResource SurfaceBrush}" Padding="10">
             <StackPanel Orientation="Horizontal" Spacing="20">
-                <TextBlock Text="{Binding FilteredCreators.Count, StringFormat='显示 {0} 条'}"
-                           Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12"/>
                 <Button Content="刷新" Command="{Binding RefreshCommand}" Padding="10,5"
                         IsEnabled="{Binding !IsLoading}"/>
                 <Button Content="应用筛选" Command="{Binding ApplyFilterCommand}" Padding="10,5"
                         IsEnabled="{Binding !IsLoading}"/>
                 <Button Content="清除筛选" Command="{Binding ClearFilterCommand}" Padding="10,5"
                         IsEnabled="{Binding !IsLoading}"/>
-                <Button Content="批量删除" Command="{Binding BatchDeleteCommand}" Padding="10,5">
-                    <Button.IsEnabled>
-                        <MultiBinding Converter="{x:Static BoolConverters.And}">
-                            <Binding Path="HasSelection"/>
-                            <Binding Path="!IsLoading"/>
-                        </MultiBinding>
-                    </Button.IsEnabled>
-                </Button>
-                <Button Content="批量恢复" Command="{Binding BatchRestoreCommand}" Padding="10,5">
-                    <Button.IsEnabled>
-                        <MultiBinding Converter="{x:Static BoolConverters.And}">
-                            <Binding Path="HasSelection"/>
-                            <Binding Path="!IsLoading"/>
-                        </MultiBinding>
-                    </Button.IsEnabled>
-                </Button>
             </StackPanel>
         </Border>
 
         <!-- 加载遮罩层 -->
-        <controls:LoadingOverlay Grid.RowSpan="3"/>
+        <controls:LoadingOverlay Grid.RowSpan="4"/>
     </Grid>
 </UserControl>

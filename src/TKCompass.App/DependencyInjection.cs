@@ -47,7 +47,11 @@ public static class DependencyInjection
         services.AddScoped<IUndoService, UndoService>();
         services.AddScoped<ExcelImportService>();
         services.AddScoped<IFollowUpService, FollowUpService>();
-        services.AddScoped<IBackupService, BackupService>();
+        services.AddScoped<IBackupService>(sp => 
+        {
+            var backupDir = Path.Combine(Path.GetDirectoryName(dbPath) ?? ".", "backups");
+            return new BackupService(dbPath, backupDir);
+        });
         services.AddScoped<IFulfillmentService, FulfillmentService>();
         services.AddScoped<ITodayTaskService, TodayTaskService>();
 

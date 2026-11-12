@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.DeliveredView"
+             x:DataType="vm:DeliveredViewModel">
+    
+    <Design.DataContext>
+        <vm:DeliveredViewModel />
+    </Design.DataContext>
+    
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Text="已交付" 
+                   FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
+        <TextBlock Text="暂无已交付的达人" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="Gray" FontSize="16"/>
+    </DockPanel>
+</UserControl>

@@ -46,43 +46,6 @@ public partial class ConfigViewModel : ObservableObject
     [ObservableProperty]
     private Dictionary? _selectedContactChannel;
 
-    // 达人类型新增字段
-    [ObservableProperty]
-    private string _newCreatorTypeName = "";
-
-    [ObservableProperty]
-    private string _newCreatorTypeDescription = "";
-
-    // 产品代码新增字段
-    [ObservableProperty]
-    private string _newProductCode = "";
-
-    [ObservableProperty]
-    private string _newProductName = "";
-
-    [ObservableProperty]
-    private string _newProductDescription = "";
-
-    // 质量等级新增字段
-    [ObservableProperty]
-    private string _newQualityCode = "";
-
-    [ObservableProperty]
-    private string _newQualityLabel = "";
-
-    [ObservableProperty]
-    private int _newQualitySort = 0;
-
-    // 联系方式渠道新增字段
-    [ObservableProperty]
-    private string _newChannelCode = "";
-
-    [ObservableProperty]
-    private string _newChannelLabel = "";
-
-    [ObservableProperty]
-    private int _newChannelSort = 0;
-
     [ObservableProperty]
     private string _errorMessage = "";
 
@@ -91,6 +54,11 @@ public partial class ConfigViewModel : ObservableObject
 
     [ObservableProperty]
     private bool _isLoading;
+
+    /// <summary>
+    /// 由 View 注入的弹窗回调：返回 true 表示用户确认，false 表示取消
+    /// </summary>
+    public Func<ConfigEditContext, Task<bool>>? ShowEditDialogAsync { get; set; }
 
     public ConfigViewModel(
         ICreatorTypeService creatorTypeService,
@@ -138,35 +106,59 @@ public partial class ConfigViewModel : ObservableObject
     #region 达人类型管理
 
     [RelayCommand]
+    private async Task EditCreatorTypeAsync()
+    {
+        if (SelectedCreatorType == null) return;
+
+        if (ShowEditDialogAsync != null)
+        {
+            var context = new ConfigEditContext
+            {
+                IsEdit = true,
+                Title = "编辑达人类型",
+                Label = SelectedCreatorType.Name,
+                Description = SelectedCreatorType.Description ?? ""
+            };
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                SelectedCreatorType.Name = context.Label;
+                SelectedCreatorType.Description = string.IsNullOrWhiteSpace(context.Description) ? null : context.Description;
+                SelectedCreatorType.UpdatedAt = DateTime.Now;
+                var saved = await _creatorTypeService.SaveAsync(SelectedCreatorType);
+                var index = CreatorTypes.IndexOf(SelectedCreatorType);
+                if (index >= 0) CreatorTypes[index] = saved;
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
+        }
+    }
+
+    [RelayCommand]
     private async Task AddCreatorTypeAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewCreatorTypeName))
+        if (ShowEditDialogAsync != null)
         {
-            ErrorMessage = "达人类型名称不能为空";
-            HasError = true;
-            return;
-        }
-
-        try
-        {
-            var type = new CreatorType
+            var context = new ConfigEditContext
             {
-                Name = NewCreatorTypeName.Trim(),
-                Description = string.IsNullOrWhiteSpace(NewCreatorTypeDescription) ? null : NewCreatorTypeDescription.Trim(),
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                IsEdit = false,
+                Title = "新增达人类型",
+                Label = "",
+                Description = ""
             };
-            var saved = await _creatorTypeService.SaveAsync(type);
-            CreatorTypes.Add(saved);
-            NewCreatorTypeName = "";
-            NewCreatorTypeDescription = "";
-            HasError = false;
-            _messenger.Send(new CreatorUpdatedMessage());
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-            HasError = true;
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                var type = new CreatorType
+                {
+                    Name = context.Label.Trim(),
+                    Description = string.IsNullOrWhiteSpace(context.Description) ? null : context.Description.Trim(),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+                var saved = await _creatorTypeService.SaveAsync(type);
+                CreatorTypes.Add(saved);
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
         }
     }
 
@@ -194,44 +186,64 @@ public partial class ConfigViewModel : ObservableObject
     #region 产品代码管理
 
     [RelayCommand]
+    private async Task EditProductCodeAsync()
+    {
+        if (SelectedProductCode == null) return;
+
+        if (ShowEditDialogAsync != null)
+        {
+            var context = new ConfigEditContext
+            {
+                IsEdit = true,
+                Title = "编辑产品代码",
+                Code = SelectedProductCode.Code,
+                Label = SelectedProductCode.Name,
+                Description = SelectedProductCode.Description ?? ""
+            };
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                SelectedProductCode.Code = context.Code;
+                SelectedProductCode.Name = context.Label;
+                SelectedProductCode.Description = string.IsNullOrWhiteSpace(context.Description) ? null : context.Description;
+                SelectedProductCode.UpdatedAt = DateTime.Now;
+                var saved = await _productCodeService.SaveAsync(SelectedProductCode);
+                var index = ProductCodes.IndexOf(SelectedProductCode);
+                if (index >= 0) ProductCodes[index] = saved;
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
+        }
+    }
+
+    [RelayCommand]
     private async Task AddProductCodeAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewProductCode))
+        if (ShowEditDialogAsync != null)
         {
-            ErrorMessage = "产品代码不能为空";
-            HasError = true;
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(NewProductName))
-        {
-            ErrorMessage = "产品名称不能为空";
-            HasError = true;
-            return;
-        }
-
-        try
-        {
-            var code = new ProductCode
+            var context = new ConfigEditContext
             {
-                Code = NewProductCode.Trim(),
-                Name = NewProductName.Trim(),
-                Description = string.IsNullOrWhiteSpace(NewProductDescription) ? null : NewProductDescription.Trim(),
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                IsEdit = false,
+                Title = "新增产品代码",
+                ShowCodeField = true,
+                Code = "",
+                Label = "",
+                Description = ""
             };
-            var saved = await _productCodeService.SaveAsync(code);
-            ProductCodes.Add(saved);
-            NewProductCode = "";
-            NewProductName = "";
-            NewProductDescription = "";
-            HasError = false;
-            _messenger.Send(new CreatorUpdatedMessage());
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-            HasError = true;
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                var code = new ProductCode
+                {
+                    Code = context.Code.Trim(),
+                    Name = context.Label.Trim(),
+                    Description = string.IsNullOrWhiteSpace(context.Description) ? null : context.Description.Trim(),
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+                var saved = await _productCodeService.SaveAsync(code);
+                ProductCodes.Add(saved);
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
         }
     }
 
@@ -259,46 +271,67 @@ public partial class ConfigViewModel : ObservableObject
     #region 质量等级管理
 
     [RelayCommand]
+    private async Task EditQualityLevelAsync()
+    {
+        if (SelectedQualityLevel == null) return;
+
+        if (ShowEditDialogAsync != null)
+        {
+            var context = new ConfigEditContext
+            {
+                IsEdit = true,
+                Title = "编辑质量等级",
+                Code = SelectedQualityLevel.Code,
+                Label = SelectedQualityLevel.Label,
+                SortOrder = SelectedQualityLevel.SortOrder
+            };
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                SelectedQualityLevel.Code = context.Code;
+                SelectedQualityLevel.Label = context.Label;
+                SelectedQualityLevel.SortOrder = context.SortOrder;
+                SelectedQualityLevel.UpdatedAt = DateTime.Now;
+                var saved = await _dictionaryService.SaveAsync(SelectedQualityLevel);
+                var index = QualityLevels.IndexOf(SelectedQualityLevel);
+                if (index >= 0) QualityLevels[index] = saved;
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
+        }
+    }
+
+    [RelayCommand]
     private async Task AddQualityLevelAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewQualityCode))
+        if (ShowEditDialogAsync != null)
         {
-            ErrorMessage = "等级代码不能为空";
-            HasError = true;
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(NewQualityLabel))
-        {
-            ErrorMessage = "等级标签不能为空";
-            HasError = true;
-            return;
-        }
-
-        try
-        {
-            var level = new Dictionary
+            var context = new ConfigEditContext
             {
-                Type = "quality_level",
-                Code = NewQualityCode.Trim(),
-                Label = NewQualityLabel.Trim(),
-                SortOrder = NewQualitySort,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                IsEdit = false,
+                Title = "新增质量等级",
+                ShowCodeField = true,
+                ShowSortOrderField = true,
+                Code = "",
+                Label = "",
+                SortOrder = 0
             };
-            var saved = await _dictionaryService.SaveAsync(level);
-            QualityLevels.Add(saved);
-            QualityLevels = new ObservableCollection<Dictionary>(QualityLevels.OrderBy(l => l.SortOrder));
-            NewQualityCode = "";
-            NewQualityLabel = "";
-            NewQualitySort = 0;
-            HasError = false;
-            _messenger.Send(new CreatorUpdatedMessage());
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-            HasError = true;
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                var level = new Dictionary
+                {
+                    Type = "quality_level",
+                    Code = context.Code.Trim(),
+                    Label = context.Label.Trim(),
+                    SortOrder = context.SortOrder,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+                var saved = await _dictionaryService.SaveAsync(level);
+                QualityLevels.Add(saved);
+                QualityLevels = new ObservableCollection<Dictionary>(QualityLevels.OrderBy(l => l.SortOrder));
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
         }
     }
 
@@ -326,46 +359,67 @@ public partial class ConfigViewModel : ObservableObject
     #region 联系方式渠道管理
 
     [RelayCommand]
+    private async Task EditContactChannelAsync()
+    {
+        if (SelectedContactChannel == null) return;
+
+        if (ShowEditDialogAsync != null)
+        {
+            var context = new ConfigEditContext
+            {
+                IsEdit = true,
+                Title = "编辑联系方式渠道",
+                Code = SelectedContactChannel.Code,
+                Label = SelectedContactChannel.Label,
+                SortOrder = SelectedContactChannel.SortOrder
+            };
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                SelectedContactChannel.Code = context.Code;
+                SelectedContactChannel.Label = context.Label;
+                SelectedContactChannel.SortOrder = context.SortOrder;
+                SelectedContactChannel.UpdatedAt = DateTime.Now;
+                var saved = await _dictionaryService.SaveAsync(SelectedContactChannel);
+                var index = ContactChannels.IndexOf(SelectedContactChannel);
+                if (index >= 0) ContactChannels[index] = saved;
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
+        }
+    }
+
+    [RelayCommand]
     private async Task AddContactChannelAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewChannelCode))
+        if (ShowEditDialogAsync != null)
         {
-            ErrorMessage = "渠道代码不能为空";
-            HasError = true;
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(NewChannelLabel))
-        {
-            ErrorMessage = "渠道标签不能为空";
-            HasError = true;
-            return;
-        }
-
-        try
-        {
-            var channel = new Dictionary
+            var context = new ConfigEditContext
             {
-                Type = "contact_channel",
-                Code = NewChannelCode.Trim(),
-                Label = NewChannelLabel.Trim(),
-                SortOrder = NewChannelSort,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                IsEdit = false,
+                Title = "新增联系方式渠道",
+                ShowCodeField = true,
+                ShowSortOrderField = true,
+                Code = "",
+                Label = "",
+                SortOrder = 0
             };
-            var saved = await _dictionaryService.SaveAsync(channel);
-            ContactChannels.Add(saved);
-            ContactChannels = new ObservableCollection<Dictionary>(ContactChannels.OrderBy(c => c.SortOrder));
-            NewChannelCode = "";
-            NewChannelLabel = "";
-            NewChannelSort = 0;
-            HasError = false;
-            _messenger.Send(new CreatorUpdatedMessage());
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-            HasError = true;
+            var result = await ShowEditDialogAsync(context);
+            if (result)
+            {
+                var channel = new Dictionary
+                {
+                    Type = "contact_channel",
+                    Code = context.Code.Trim(),
+                    Label = context.Label.Trim(),
+                    SortOrder = context.SortOrder,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+                var saved = await _dictionaryService.SaveAsync(channel);
+                ContactChannels.Add(saved);
+                ContactChannels = new ObservableCollection<Dictionary>(ContactChannels.OrderBy(c => c.SortOrder));
+                _messenger.Send(new CreatorUpdatedMessage());
+            }
         }
     }
 

@@ -45,6 +45,7 @@ public partial class App : Application
         // 注册 ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<CreatorDashboardViewModel>();
+        services.AddTransient<AllCreatorsViewModel>();
         services.AddTransient<CreatorEditViewModel>();
         services.AddTransient<ConfigViewModel>();
         services.AddTransient<SettingsViewModel>();
@@ -55,7 +56,6 @@ public partial class App : Application
         services.AddTransient<ProductMultiSelectViewModel>();
         services.AddTransient<CreatorTypeMultiSelectViewModel>();
         services.AddTransient<BatchRemindLogViewModel>();
-        services.AddTransient<TodayFollowUpViewModel>();
         
         Services = services.BuildServiceProvider();
         

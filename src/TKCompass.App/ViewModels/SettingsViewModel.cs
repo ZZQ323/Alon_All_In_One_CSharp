@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Collections.ObjectModel;
 using TKCompass.Domain.Services;
 
 namespace TKCompass.ViewModels;
@@ -11,6 +12,7 @@ namespace TKCompass.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly IOperationLogService _operationLogService;
+    private readonly IBackupService _backupService;
 
     [ObservableProperty]
     private string _databasePath = "";
@@ -36,10 +38,18 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoading;
 
-    public SettingsViewModel(IOperationLogService operationLogService)
+    [ObservableProperty]
+    private ObservableCollection<BackupFileInfo> _backupHistory = new();
+
+    [ObservableProperty]
+    private BackupFileInfo? _selectedBackup;
+
+    public SettingsViewModel(IOperationLogService operationLogService, IBackupService backupService)
     {
         _operationLogService = operationLogService;
+        _backupService = backupService;
         LoadSettings();
+        _ = LoadBackupHistoryAsync();
     }
 
     private void LoadSettings()
@@ -173,6 +183,118 @@ public partial class SettingsViewModel : ObservableObject
         {
             StatusMessage = $"浏览失败: {ex.Message}";
             HasError = true;
+        }
+    }
+
+    [RelayCommand]
+    private async Task CreateManualBackupAsync()
+    {
+        IsLoading = true;
+        try
+        {
+            StatusMessage = "正在创建备份...";
+            HasError = false;
+
+            var backupPath = await _backupService.CreateBackupAsync();
+
+            StatusMessage = $"备份成功: {Path.GetFileName(backupPath)}";
+            HasError = false;
+
+            await LoadBackupHistoryAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"备份失败: {ex.Message}";
+            HasError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task RestoreBackupAsync()
+    {
+        if (SelectedBackup == null)
+        {
+            StatusMessage = "请先选择一个备份文件";
+            HasError = true;
+            return;
+        }
+
+        IsLoading = true;
+        try
+        {
+            StatusMessage = "正在恢复备份...";
+            HasError = false;
+
+            await _backupService.RestoreBackupAsync(SelectedBackup.FullPath);
+
+            StatusMessage = $"恢复成功: {SelectedBackup.FileName}";
+            HasError = false;
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"恢复失败: {ex.Message}";
+            HasError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteBackupAsync()
+    {
+        if (SelectedBackup == null)
+        {
+            StatusMessage = "请先选择一个备份文件";
+            HasError = true;
+            return;
+        }
+
+        IsLoading = true;
+        try
+        {
+            await _backupService.DeleteBackupAsync(SelectedBackup.FullPath);
+
+            StatusMessage = $"已删除备份: {SelectedBackup.FileName}";
+            HasError = false;
+
+            await LoadBackupHistoryAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"删除失败: {ex.Message}";
+            HasError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task RefreshBackupListAsync()
+    {
+        await LoadBackupHistoryAsync();
+        StatusMessage = "备份列表已刷新";
+        HasError = false;
+    }
+
+    private async Task LoadBackupHistoryAsync()
+    {
+        try
+        {
+            var backups = await _backupService.GetBackupListAsync();
+            BackupHistory = new ObservableCollection<BackupFileInfo>(backups);
+        }
+        catch
+        {
+            // 加载失败时保持空列表
+            BackupHistory = new ObservableCollection<BackupFileInfo>();
         }
     }
 }

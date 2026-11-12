@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TKCompass.ViewModels"
+             x:Class="TKCompass.Views.RemindedView"
+             x:DataType="vm:RemindedViewModel">
+  <DockPanel Margin="20">
+    <TextBlock DockPanel.Dock="Top" Text="已提醒" 
+               FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
+    <TextBlock Text="暂无已提醒的达人" 
+               HorizontalAlignment="Center" VerticalAlignment="Center"
+               Foreground="Gray" FontSize="16"/>
+  </DockPanel>
+</UserControl>

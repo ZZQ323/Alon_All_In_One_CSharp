@@ -16,6 +16,8 @@
             <conv:CooperationStatusConverter x:Key="CooperationStatusConverter" />
             <conv:TodayStatusConverter x:Key="TodayStatusConverter" />
             <conv:TodayStatusToBrushConverter x:Key="TodayStatusToBrushConverter" />
+            <!-- 布尔转换器 -->
+            <conv:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter" />
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>
