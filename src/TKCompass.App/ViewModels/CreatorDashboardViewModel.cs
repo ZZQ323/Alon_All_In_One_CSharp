@@ -83,6 +83,12 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
 
         SelectedDeliveryCreators.CollectionChanged += (s, e) => HasDeliverySelection = SelectedDeliveryCreators.Count > 0;
 
+        // 注入 Filter 回调
+        Filter.OnRefresh = () => _ = RefreshAsync();
+        Filter.OnApplyFilter = ApplyFilter;
+        Filter.OnClearFilter = ClearFilter;
+        Filter.OnCreateCreator = CreateCreator;
+
         _ = LoadDataAsync();
     }
 
@@ -116,13 +122,8 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
                  c.CooperationStatus == CooperationStatus.SampleSent) && 
                 !c.Delivered && !c.Deleted));
 
-            // 更新统计数字（顶部统计栏仍需要这些计数）
-            TotalCount = AllCreators.Count;
-            DeliveredCount = list.Count(c => c.Delivered && !c.Deleted);
-            DeletedCount = list.Count(c => c.Deleted);
-            RemindedCount = list.Count(c => c.TodayStatus == TodayStatus.Reminded && !c.Deleted);
-            DeliveringCount = InDeliveryCreators.Count;
-            TodayFollowUpCount = TodayReminderCreators.Count;
+            // 更新统计数字
+            UpdateStatistics(list);
         }
         catch (Exception ex)
         {
@@ -135,6 +136,19 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
         {
             IsLoading = false;
         }
+    }
+
+    /// <summary>
+    /// 更新统计数字（顶部统计栏）
+    /// </summary>
+    private void UpdateStatistics(List<Creator> allCreators)
+    {
+        TotalCount = AllCreators.Count;
+        DeliveredCount = allCreators.Count(c => c.Delivered && !c.Deleted);
+        DeletedCount = allCreators.Count(c => c.Deleted);
+        RemindedCount = allCreators.Count(c => c.TodayStatus == TodayStatus.Reminded && !c.Deleted);
+        DeliveringCount = InDeliveryCreators.Count;
+        TodayFollowUpCount = TodayReminderCreators.Count;
     }
 
     public void Receive(CreatorUpdatedMessage message)
@@ -151,14 +165,44 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
     [RelayCommand]
     private void CreateCreator()
     {
-        // 命令占位符 - 实际弹窗打开逻辑在 View 的 code-behind 中处理
-        // View 绑定此命令并打开 CreateCreatorDialog
+        // 通过 Messenger 通知 View 层打开弹窗（解耦 DI Scoped 生命周期）
+        _messenger.Send(new OpenCreateCreatorDialogMessage());
     }
 
     [RelayCommand]
     private void ApplyFilter()
     {
         var filtered = AllCreators.AsEnumerable();
+
+        // 应用通用筛选条件
+        filtered = ApplyCommonFilter(filtered);
+
+        FilteredCreators = new ObservableCollection<Creator>(filtered);
+
+        // 今日提醒 Tab：在通用筛选基础上，叠加"今日状态为待跟进"
+        var todayReminder = AllCreators.AsEnumerable()
+            .Where(c => c.TodayStatus == TodayStatus.Pending);
+        todayReminder = ApplyCommonFilter(todayReminder);
+        TodayReminderCreators = new ObservableCollection<Creator>(todayReminder);
+
+        // 正在交付 Tab：在通用筛选基础上，叠加"同意合作或寄样中，且未交付"
+        var inDelivery = AllCreators.AsEnumerable()
+            .Where(c => (c.CooperationStatus == CooperationStatus.CooperationAgreed || 
+                         c.CooperationStatus == CooperationStatus.SampleSent) && 
+                        !c.Delivered);
+        inDelivery = ApplyCommonFilter(inDelivery);
+        InDeliveryCreators = new ObservableCollection<Creator>(inDelivery);
+
+        // 筛选后更新统计数字
+        UpdateStatistics(AllCreators.ToList());
+    }
+
+    /// <summary>
+    /// 应用通用筛选条件（提取公共逻辑）
+    /// </summary>
+    private IEnumerable<Creator> ApplyCommonFilter(IEnumerable<Creator> source)
+    {
+        var filtered = source;
 
         if (!string.IsNullOrEmpty(Filter.HandleSearch))
         {
@@ -219,7 +263,7 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
                     s.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)));
         }
 
-        FilteredCreators = new ObservableCollection<Creator>(filtered);
+        return filtered;
     }
 
     [RelayCommand]
@@ -227,6 +271,20 @@ public partial class CreatorDashboardViewModel : ObservableObject, IRecipient<Cr
     {
         Filter.Reset();
         FilteredCreators = new ObservableCollection<Creator>(AllCreators);
+        
+        // 重置今日提醒 Tab
+        TodayReminderCreators = new ObservableCollection<Creator>(
+            AllCreators.Where(c => c.TodayStatus == TodayStatus.Pending));
+        
+        // 重置正在交付 Tab
+        InDeliveryCreators = new ObservableCollection<Creator>(
+            AllCreators.Where(c => 
+                (c.CooperationStatus == CooperationStatus.CooperationAgreed || 
+                 c.CooperationStatus == CooperationStatus.SampleSent) && 
+                !c.Delivered));
+
+        // 清除筛选后更新统计数字
+        UpdateStatistics(AllCreators.ToList());
     }
 
     [RelayCommand]

@@ -8,11 +8,65 @@
         <vm:DeletedViewModel />
     </Design.DataContext>
     
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Text="已删除" 
-                   FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
-        <TextBlock Text="暂无已删除的达人" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Foreground="Gray" FontSize="16"/>
-    </DockPanel>
+    <Panel>
+        <Grid RowDefinitions="Auto,*,Auto">
+            <!-- 顶部标题区 -->
+            <StackPanel Grid.Row="0" Margin="20" Spacing="10">
+                <TextBlock Text="已删除" FontSize="24" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="刷新" Command="{Binding RefreshCommand}" Padding="10,5"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- 达人列表 -->
+            <DataGrid Grid.Row="1" 
+                      ItemsSource="{Binding Creators}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      Margin="20,0"
+                      GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="120"/>
+                    <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="150"/>
+                    <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="80"/>
+                    <DataGridTextColumn Header="合作状态" Binding="{Binding CooperationStatus}" Width="120"/>
+                    <DataGridTextColumn Header="备注" Binding="{Binding CreatorNotes}" Width="200"/>
+                    <DataGridTemplateColumn Header="操作" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <Button Content="恢复" 
+                                            Command="{Binding $parent[DataGrid].DataContext.RestoreCommand}" 
+                                            CommandParameter="{Binding}" 
+                                            Padding="10,5" 
+                                            Background="#4CAF50" 
+                                            Foreground="White"/>
+                                    <Button Content="永久删除" 
+                                            Command="{Binding $parent[DataGrid].DataContext.PermanentDeleteCommand}" 
+                                            CommandParameter="{Binding}" 
+                                            Padding="10,5" 
+                                            Background="#F44336" 
+                                            Foreground="White"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!-- 底部状态栏 -->
+            <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" Padding="10" Margin="20">
+                <TextBlock Text="{Binding Creators.Count, StringFormat='共 {0} 个已删除达人'}" 
+                           Foreground="{DynamicResource SecondaryTextBrush}"/>
+            </Border>
+        </Grid>
+        
+        <!-- 加载遮罩 -->
+        <Border Background="#80000000" IsVisible="{Binding IsLoading}" ZIndex="99">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="200" Height="4"/>
+                <TextBlock Text="加载中..." Margin="0,10,0,0" Foreground="White" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Panel>
 </UserControl>

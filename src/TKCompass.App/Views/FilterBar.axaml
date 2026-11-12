@@ -5,52 +5,63 @@
              x:DataType="vm:FilterViewModel">
     
     <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="5" Padding="15">
-        <StackPanel Spacing="10">
-            <TextBlock Text="筛选" FontSize="14" FontWeight="Bold" Foreground="White"/>
+        <DockPanel>
+            <!-- 右侧操作按钮 -->
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top" Margin="15,0,0,0">
+                <Button Content="刷新" Command="{Binding RefreshCommand}" Padding="12,5" Height="32"/>
+                <Button Content="应用筛选" Command="{Binding ApplyFilterCommand}" Classes="accent" Padding="12,5" Height="32"/>
+                <Button Content="清除筛选" Command="{Binding ClearFilterCommand}" Padding="12,5" Height="32"/>
+                <Button Content="新建达人" Command="{Binding CreateCreatorCommand}" Classes="accent" Padding="12,5" Height="32"/>
+            </StackPanel>
             
-            <WrapPanel Orientation="Horizontal" Margin="0,5">
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="达人ID" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <TextBox Text="{Binding HandleSearch}" Width="150" Watermark="搜索达人ID"/>
-                </StackPanel>
+            <!-- 左侧筛选条件 -->
+            <StackPanel Spacing="10">
+                <TextBlock Text="筛选" FontSize="14" FontWeight="Bold" Foreground="White"/>
                 
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="状态" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <ComboBox ItemsSource="{Binding StatusOptions}" 
-                              SelectedItem="{Binding SelectedStatus}" Width="120"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="等级" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <ComboBox ItemsSource="{Binding QualityLevelOptions}" 
-                              SelectedItem="{Binding SelectedQualityLevel}" Width="80"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="寄样日期从" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <DatePicker SelectedDate="{Binding SampleDateFrom}" Width="130"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="寄样日期到" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <DatePicker SelectedDate="{Binding SampleDateTo}" Width="130"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="联系日期从" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <DatePicker SelectedDate="{Binding ContactDateFrom}" Width="130"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="联系日期到" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <DatePicker SelectedDate="{Binding ContactDateTo}" Width="130"/>
-                </StackPanel>
-                
-                <StackPanel Margin="0,0,15,5">
-                    <TextBlock Text="产品名" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                    <TextBox Text="{Binding ProductNameSearch}" Width="150" Watermark="搜索产品名"/>
-                </StackPanel>
-            </WrapPanel>
-        </StackPanel>
+                <WrapPanel Orientation="Horizontal" Margin="0,5">
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="达人ID" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <TextBox Text="{Binding HandleSearch}" Width="150" PlaceholderText="搜索达人ID"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="状态" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <ComboBox ItemsSource="{Binding StatusOptions}" 
+                                  SelectedItem="{Binding SelectedStatus}" Width="120"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="等级" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <ComboBox ItemsSource="{Binding QualityLevelOptions}" 
+                                  SelectedItem="{Binding SelectedQualityLevel}" Width="80"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="寄样日期从" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <DatePicker SelectedDate="{Binding SampleDateFrom}" Width="130"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="寄样日期到" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <DatePicker SelectedDate="{Binding SampleDateTo}" Width="130"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="联系日期从" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <DatePicker SelectedDate="{Binding ContactDateFrom}" Width="130"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="联系日期到" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <DatePicker SelectedDate="{Binding ContactDateTo}" Width="130"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,15,5">
+                        <TextBlock Text="产品名" FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        <TextBox Text="{Binding ProductNameSearch}" Width="150" PlaceholderText="搜索产品名"/>
+                    </StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </DockPanel>
     </Border>
 </UserControl>

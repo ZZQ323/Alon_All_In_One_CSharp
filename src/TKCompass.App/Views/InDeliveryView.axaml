@@ -3,15 +3,28 @@
              xmlns:vm="using:TKCompass.ViewModels"
              x:Class="TKCompass.Views.InDeliveryView"
              x:DataType="vm:InDeliveryViewModel">
-    <Design.DataContext>
-        <vm:InDeliveryViewModel />
-    </Design.DataContext>
-    
-    <DockPanel Margin="20">
-        <TextBlock DockPanel.Dock="Top" Text="{Binding Title}" 
-                   FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
-        <TextBlock Text="暂无正在交付中的达人" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Foreground="Gray" FontSize="16"/>
-    </DockPanel>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="20,10">
+            <TextBlock Text="正在交付" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Button Content="刷新" Command="{Binding RefreshCommand}" Padding="10,5"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Creators}" AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Extended" Margin="20,10"
+                  SelectionChanged="DataGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="达人ID" Binding="{Binding Handle}" Width="100"/>
+                <DataGridTextColumn Header="昵称" Binding="{Binding Nickname}" Width="120"/>
+                <DataGridTextColumn Header="等级" Binding="{Binding QualityLevel}" Width="50"/>
+                <DataGridTextColumn Header="状态" Binding="{Binding CooperationStatus}" Width="100"/>
+                <DataGridTextColumn Header="首次寄样" Binding="{Binding FirstSampleDate, StringFormat='{}{0:yyyy-MM-dd}'}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="20,10">
+            <TextBlock Text="{Binding Creators.Count, StringFormat='共 {0} 条'}" VerticalAlignment="Center" Foreground="Gray"/>
+            <Button Content="复制选定达人ID" Command="{Binding CopyHandleCommand}" Padding="10,5" Background="#2196F3" Foreground="White"/>
+            <Button Content="复制选定快递单号" Command="{Binding CopyTrackingNumberCommand}" Padding="10,5" Background="#4CAF50" Foreground="White"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

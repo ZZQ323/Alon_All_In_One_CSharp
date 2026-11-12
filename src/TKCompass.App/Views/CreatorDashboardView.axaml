@@ -43,12 +43,8 @@
 
         <!-- 主内容区：筛选栏 + TabControl -->
         <Grid Grid.Row="2" RowDefinitions="Auto,*">
-            <!-- 筛选栏 + 新建按钮 -->
-            <DockPanel Grid.Row="0" Margin="15,15,15,0">
-                <Button DockPanel.Dock="Right" Content="新建达人" Click="CreateCreatorButton_Click"
-                        Classes="accent" Padding="15,5" Height="32" VerticalAlignment="Top"/>
-                <views:FilterBar DataContext="{Binding Filter}"/>
-            </DockPanel>
+            <!-- 筛选栏（内置刷新/应用/清除/新建达人按钮） -->
+            <views:FilterBar Grid.Row="0" DataContext="{Binding Filter}" Margin="15,15,15,0"/>
 
             <!-- TabControl -->
             <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" Margin="15">
@@ -161,18 +157,6 @@
 
             </TabControl>
         </Grid>
-
-        <!-- 底部状态栏 -->
-        <Border Grid.Row="3" Background="{DynamicResource SurfaceBrush}" Padding="10">
-            <StackPanel Orientation="Horizontal" Spacing="20">
-                <Button Content="刷新" Command="{Binding RefreshCommand}" Padding="10,5"
-                        IsEnabled="{Binding !IsLoading}"/>
-                <Button Content="应用筛选" Command="{Binding ApplyFilterCommand}" Padding="10,5"
-                        IsEnabled="{Binding !IsLoading}"/>
-                <Button Content="清除筛选" Command="{Binding ClearFilterCommand}" Padding="10,5"
-                        IsEnabled="{Binding !IsLoading}"/>
-            </StackPanel>
-        </Border>
 
         <!-- 加载遮罩层 -->
         <controls:LoadingOverlay Grid.RowSpan="4"/>

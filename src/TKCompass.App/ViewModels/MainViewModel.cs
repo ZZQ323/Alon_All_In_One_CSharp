@@ -116,13 +116,17 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
             operationLogService,
             messenger);
         _crm = new CrmViewModel(creatorService, messenger);
-        _todayReminder = new TodayReminderViewModel();
-        _inDelivery = new InDeliveryViewModel();
+        _todayReminder = new TodayReminderViewModel(creatorService, messenger);
+        _inDelivery = new InDeliveryViewModel(creatorService, messenger);
         _allCreators = new AllCreatorsViewModel(creatorService, messenger);
-        _delivered = new DeliveredViewModel();
-        _deleted = new DeletedViewModel();
-        _reminded = new RemindedViewModel();
+        _delivered = new DeliveredViewModel(creatorService, messenger);
+        _deleted = new DeletedViewModel(creatorService, messenger);
+        _reminded = new RemindedViewModel(creatorService, messenger);
         _currentView = _dashboard;
+
+        // 注册消息接收（关键！否则弹窗消息无人处理）
+        _messenger.Register<MainViewModel, OpenCreateCreatorDialogMessage>(this, (r, m) => r.Receive(m));
+        _messenger.Register<MainViewModel, OpenCreatorDetailMessage>(this, (r, m) => r.Receive(m));
     }
 
     public void SetStatus(string message)
@@ -250,8 +254,8 @@ public partial class MainViewModel : ObservableObject, IRecipient<OpenCreatorDet
     public void Receive(OpenCreateCreatorDialogMessage message)
     {
         // 打开新建达人弹窗
-        var dialog = new Views.CreateCreatorDialog();
         var viewModel = new CreateCreatorDialogViewModel(_creatorService, _messenger);
+        var dialog = new Views.CreateCreatorDialog(viewModel);
         dialog.DataContext = viewModel;
         
         // 获取主窗口并显示对话框

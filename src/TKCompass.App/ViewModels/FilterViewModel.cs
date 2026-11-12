@@ -1,12 +1,19 @@
 using System;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using TKCompass.Domain.Enums;
 
 namespace TKCompass.ViewModels;
 
 public partial class FilterViewModel : ObservableObject
 {
+    // 回调委托 - 由父 ViewModel 注入
+    public Action? OnRefresh { get; set; }
+    public Action? OnApplyFilter { get; set; }
+    public Action? OnClearFilter { get; set; }
+    public Action? OnCreateCreator { get; set; }
+
     [ObservableProperty] private string _handleSearch = "";
     [ObservableProperty] private string _selectedStatus = "";
     [ObservableProperty] private string _selectedQualityLevel = "";
@@ -16,6 +23,30 @@ public partial class FilterViewModel : ObservableObject
     [ObservableProperty] private DateOnly? _contactDateTo;
     [ObservableProperty] private ObservableCollection<string> _selectedProductCodes = new();
     [ObservableProperty] private string _productNameSearch = "";
+
+    [RelayCommand]
+    private void Refresh()
+    {
+        OnRefresh?.Invoke();
+    }
+
+    [RelayCommand]
+    private void ApplyFilter()
+    {
+        OnApplyFilter?.Invoke();
+    }
+
+    [RelayCommand]
+    private void ClearFilter()
+    {
+        OnClearFilter?.Invoke();
+    }
+
+    [RelayCommand]
+    private void CreateCreator()
+    {
+        OnCreateCreator?.Invoke();
+    }
     
     public ObservableCollection<string> StatusOptions { get; } = new()
     {

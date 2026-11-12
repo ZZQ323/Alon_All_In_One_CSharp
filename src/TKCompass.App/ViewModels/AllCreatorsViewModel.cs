@@ -207,6 +207,16 @@ public partial class AllCreatorsViewModel : ObservableObject, IRecipient<Creator
     }
 
     [RelayCommand]
+    private async Task SoftDeleteCreatorAsync(Creator? creator)
+    {
+        if (creator == null) return;
+
+        await _creatorService.DeleteAsync(creator.Id);
+        _messenger.Send(new CreatorUpdatedMessage());
+        await LoadDataAsync();
+    }
+
+    [RelayCommand]
     private void OpenCreatorDetail(Creator creator)
     {
         if (creator == null)
